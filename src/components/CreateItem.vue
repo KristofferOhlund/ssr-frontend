@@ -5,6 +5,9 @@ import { API } from "../config/config.js";
 const title = ref("");
 const content = ref("");
 
+/**
+ * Createa new Document in database
+ */
 async function createDocument() {
   await fetch(`${API}/document`, {
     body: JSON.stringify({
@@ -16,6 +19,10 @@ async function createDocument() {
     },
     method: "POST",
   });
+
+  // Clear input
+  title.value = "";
+  content.value = "";
 }
 </script>
 
