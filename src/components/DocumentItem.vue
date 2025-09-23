@@ -9,6 +9,7 @@
       </h3>
       <slot></slot>
       <slot name="delete"></slot>
+      <slot name="update"></slot>
     </div>
   </div>
 </template>

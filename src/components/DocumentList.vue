@@ -3,8 +3,24 @@ import DocumentItem from "./DocumentItem.vue";
 import DocumentationIcon from "./icons/IconDocumentation.vue";
 import { ref, onMounted, watchEffect } from "vue";
 import { API } from "../config/config.js";
+import router from "../router/index.js";
 
 const allDocuments = ref([{ title: "Loading files..." }]);
+
+/**
+ * Fetch all documents from database
+ */
+async function updateDocumentList() {
+  const res = await fetch(API);
+  allDocuments.value = await res.json();
+}
+
+/**
+ * Init loader - fetch on component mount
+ */
+onMounted(async () => {
+  await updateDocumentList();
+});
 
 /**
  * Delete Document from database
@@ -24,36 +40,33 @@ async function deleteObject(id) {
 }
 
 /**
- * Fetch all documents from database
+ * Update Document
  */
-async function updateDocumentList() {
-  const res = await fetch(API);
-  allDocuments.value = await res.json();
+function updateDocument(document) {
+  router.push({
+    path: "update",
+    params: { doc: "document" },
+  });
 }
-
-/**
- * Init loader - fetch on component mount
- */
-onMounted(async () => {
-  await updateDocumentList();
-});
 </script>
 
 <template>
   <!-- <div v-if="allDocuments.length > 0"> -->
-  <div v-for="{ title, content, _id } in allDocuments" :key="_id">
+  <div v-for="document in allDocuments" :key="document._id">
     <DocumentItem>
       <template #icon>
         <DocumentationIcon />
       </template>
       <template #heading
-        ><a :href="`document/${_id}`">{{ title }}</a></template
+        ><a :href="`document/${_id}`">{{ document.title }}</a></template
       >
-      {{ content }}
+      {{ document.content }}
       <template #delete
-        ><button value="`${_id}`" @click="deleteObject(_id)">Delete</button></template
+        ><button value="`${_id}`" @click="deleteObject(document.id)">Delete</button></template
+      >
+      <template #update
+        ><button value="`${_id}`" @click="updateDocument(document)">Update</button></template
       >
     </DocumentItem>
   </div>
-  <!-- </div> -->
 </template>
