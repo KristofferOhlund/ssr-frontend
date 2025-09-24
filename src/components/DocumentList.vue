@@ -29,7 +29,7 @@ onMounted(async () => {
 async function deleteObject(id) {
   console.log(id);
   await fetch(`${API}/document`, {
-    body: JSON.stringify({ "id": id }),
+    body: JSON.stringify({ id: id }),
     headers: {
       "content-type": "application/json",
     },
@@ -49,7 +49,7 @@ function updateDocument(id) {
   router.push({
     name: "update",
     params: {
-      id: id
+      id: id,
     },
   });
 }
@@ -59,7 +59,6 @@ function updateDocument(id) {
   <!-- <div v-if="allDocuments.length > 0"> -->
   <div v-for="document in allDocuments" :key="document._id">
     <DocumentItem>
-
       <template #icon>
         <DocumentationIcon />
       </template>
@@ -77,7 +76,6 @@ function updateDocument(id) {
       <template #update>
         <button :value="document._id" @click="updateDocument(document._id)">Update</button>
       </template>
-
     </DocumentItem>
   </div>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { API } from "../config/config.js";
+import router from "../router/index.js";
 
 const title = ref("");
 const content = ref("");
@@ -23,6 +24,11 @@ async function createDocument() {
   // Clear input
   title.value = "";
   content.value = "";
+
+  /**
+   * Redirect to all documents route
+   */
+  router.push("/documents");
 }
 </script>
 

@@ -1,25 +1,32 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { API } from "../config/config.js";
 import router from "../router/index.js";
 
 const props = defineProps({
-  data: Object
+  // data: Object,
+  id: String,
 });
 
-const document = ref(props.data);
-console.log('document: ', document);
+const documentData = ref(null);
+
+// Call getDocument function
+onMounted(async () => await getDocument(props.id));
+
+async function getDocument(id) {
+  const res = await fetch(`${API}/document/${id}`);
+  documentData.value = await res.json();
+}
 
 /**
  * Createa new Document in database
  */
 async function updateDocument() {
-  // console.log('sending PUT', API, title.value, content.value, document.value._id);
   await fetch(`${API}/document`, {
     body: JSON.stringify({
-      id: `${document.value._id}`,
-      title: `${title.value}`,
-      content: `${content.value}`,
+      id: `${documentData.value._id}`,
+      title: `${documentData.value.title}`,
+      content: `${documentData.value.content}`,
     }),
     headers: {
       "content-type": "application/json",
@@ -27,16 +34,19 @@ async function updateDocument() {
     method: "PUT",
   });
 
-  // Push to `/document/${document.value._id}` when it exists
-  router.push('/documents');
+  /**
+   * Redirect to all documents route
+   */
+  router.push("/documents");
 }
 </script>
 
+<!-- TEMPLATE -->
 <template>
   <p>Make updates and press submit:</p>
-  <form v-if="document" @submit.prevent="updateDocument" id="update">
+  <form v-if="documentData" @submit.prevent="updateDocument" id="update">
     <label for="title">
-      <input type="text" id="title" name="title" v-model="document.title" required />
+      <input type="text" id="title" name="title" v-model="documentData.title" required />
     </label>
     <label for="content">
       <textarea
@@ -45,7 +55,7 @@ async function updateDocument() {
         name="content"
         rows="5"
         cols="33"
-        v-model="document.content"
+        v-model="documentData.content"
         required
       ></textarea>
     </label>
