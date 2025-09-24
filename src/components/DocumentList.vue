@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DocumentItem from "./DocumentItem.vue";
 import DocumentationIcon from "./icons/IconDocumentation.vue";
-import { ref, onMounted, watchEffect } from "vue";
+import { ref, onMounted } from "vue";
 import { API } from "../config/config.js";
 import router from "../router/index.js";
 
@@ -10,7 +10,7 @@ const allDocuments = ref([{ title: "Loading files..." }]);
 /**
  * Fetch all documents from database
  */
-async function updateDocumentList() {
+async function getDocumentList() {
   const res = await fetch(API);
   allDocuments.value = await res.json();
 }
@@ -19,7 +19,7 @@ async function updateDocumentList() {
  * Init loader - fetch on component mount
  */
 onMounted(async () => {
-  await updateDocumentList();
+  await getDocumentList();
 });
 
 /**
@@ -27,8 +27,9 @@ onMounted(async () => {
  * @param id string
  */
 async function deleteObject(id) {
+  console.log(id);
   await fetch(`${API}/document`, {
-    body: JSON.stringify({ id: id }),
+    body: JSON.stringify({ "id": id }),
     headers: {
       "content-type": "application/json",
     },
@@ -36,16 +37,20 @@ async function deleteObject(id) {
   });
 
   // Update data
-  updateDocumentList();
+  getDocumentList();
 }
 
 /**
  * Update Document
+ * DocumentList.vue:47 [Vue Router warn]: Path "update" was passed with params but they will be ignored. Use a named route alongside params instead.
+ *
  */
-function updateDocument(document) {
+function updateDocument(id) {
   router.push({
-    path: "update",
-    params: { doc: "document" },
+    name: "update",
+    params: {
+      id: id
+    },
   });
 }
 </script>
@@ -54,19 +59,25 @@ function updateDocument(document) {
   <!-- <div v-if="allDocuments.length > 0"> -->
   <div v-for="document in allDocuments" :key="document._id">
     <DocumentItem>
+
       <template #icon>
         <DocumentationIcon />
       </template>
-      <template #heading
-        ><a :href="`document/${_id}`">{{ document.title }}</a></template
-      >
+
+      <template #heading>
+        <a :href="`document/${document._id}`">{{ document.title }}</a>
+      </template>
+
       {{ document.content }}
-      <template #delete
-        ><button value="`${_id}`" @click="deleteObject(document.id)">Delete</button></template
-      >
-      <template #update
-        ><button value="`${_id}`" @click="updateDocument(document)">Update</button></template
-      >
+
+      <template #delete>
+        <button :value="document._id" @click="deleteObject(document._id)">Delete</button>
+      </template>
+
+      <template #update>
+        <button :value="document._id" @click="updateDocument(document._id)">Update</button>
+      </template>
+
     </DocumentItem>
   </div>
 </template>

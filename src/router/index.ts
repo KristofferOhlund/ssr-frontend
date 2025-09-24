@@ -29,10 +29,11 @@ const router = createRouter({
       component: CreateView,
     },
     {
-      path: "/update/",
+      path: "/update/:id",
       name: "update",
       component: UpdateView,
-      props: true,
+      props: true
+      // props: (route) => (JSON.parse(route.params)),
     },
   ],
 });
