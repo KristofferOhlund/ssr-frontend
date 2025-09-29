@@ -3,15 +3,18 @@ import DocumentList from '../components/DocumentList.vue'
 </script>
 
 <template>
-  <div class="about">
+  <div class="document-list">
     <h1>All documents</h1>
       <DocumentList />
   </div>
 </template>
 
 <style>
+.document-list {
+  margin: 0 auto;
+}
 @media (min-width: 1024px) {
-  .about {
+  .document-list {
     min-height: 100vh;
     display: flex;
     flex-direction: column;

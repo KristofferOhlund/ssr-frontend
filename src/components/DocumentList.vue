@@ -12,7 +12,7 @@ const allDocuments = ref([{ title: "Loading files..." }]);
  */
 async function getDocumentList() {
   const res = await fetch(API);
-  let result = await res.json();
+  const result = await res.json();
 
   allDocuments.value = result;
 }
@@ -58,13 +58,33 @@ function updateDocument(id) {
 </script>
 <template>
   <div class="doc" v-for="document in allDocuments" :key="document._id">
-    <DocumentationIcon />
+    <i><DocumentationIcon /></i>
     <DocItem :doc="document"> </DocItem>
   </div>
 </template>
+
+<style scoped>
+  .doc {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  i {
+    display: flex;
+    place-items: center;
+    place-content: center;
+    width: 32px;
+    height: 32px;
+
+    color: var(--color-text);
+  }
+
+</style>
+
 <!--
 <template>
-  <!-- <div v-if="allDocuments.length > 0"> 
+  <!-- <div v-if="allDocuments.length > 0">
   <div v-for="document in allDocuments" :key="document._id">
     <DocumentItem>
       <template #icon>

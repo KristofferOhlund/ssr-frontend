@@ -8,15 +8,20 @@ const props = defineProps<{
 
 <template>
   <div class="item">
-    <h1 id="title">{{ props.doc.title }}</h1>
-    <h2 id="content">{{ props.doc.content }}</h2>
-    <h2 id="id">{{ props.doc._id }}</h2>
+    <h3 id="title">{{ props.doc.title }}</h3>
+    <p id="content">{{ props.doc.content }}</p>
+    <p class="id" id="id">{{ props.doc._id }}</p>
   </div>
 </template>
 
 <style scoped>
 .item {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  min-width: 0;
   margin-top: 2rem;
+  align-items: flex-start;
 }
 
 .details {
@@ -24,27 +29,27 @@ const props = defineProps<{
   margin-left: 1rem;
 }
 
-i {
-  display: flex;
-  place-items: center;
-  place-content: center;
-  width: 32px;
-  height: 32px;
-
-  color: var(--color-text);
-}
-
 h3 {
   font-size: 1.2rem;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.4rem;
+  color: var(--color-heading);
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 0.3rem;
+}
+
+.id {
+  font-size: 0.8rem;
   color: var(--color-heading);
 }
 
 @media (min-width: 1024px) {
   .item {
     margin-top: 0;
-    padding: 0.4rem 0 1rem calc(var(--section-gap) / 2);
+    padding: 0.4rem 0 1rem calc(var(--section-gap) / 4);
   }
 
   i {
