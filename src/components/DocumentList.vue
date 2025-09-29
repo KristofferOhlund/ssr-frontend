@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DocumentItem from "./DocumentItem.vue";
+import DocItem from "./DocItem.vue";
 import DocumentationIcon from "./icons/IconDocumentation.vue";
 import { ref, onMounted } from "vue";
 import { API } from "../config/config.js";
@@ -12,7 +12,9 @@ const allDocuments = ref([{ title: "Loading files..." }]);
  */
 async function getDocumentList() {
   const res = await fetch(API);
-  allDocuments.value = await res.json();
+  let result = await res.json();
+
+  allDocuments.value = result;
 }
 
 /**
@@ -54,9 +56,15 @@ function updateDocument(id) {
   });
 }
 </script>
-
 <template>
-  <!-- <div v-if="allDocuments.length > 0"> -->
+  <div class="doc" v-for="document in allDocuments" :key="document._id">
+    <DocumentationIcon />
+    <DocItem :doc="document"> </DocItem>
+  </div>
+</template>
+<!--
+<template>
+  <!-- <div v-if="allDocuments.length > 0"> 
   <div v-for="document in allDocuments" :key="document._id">
     <DocumentItem>
       <template #icon>
@@ -79,3 +87,4 @@ function updateDocument(id) {
     </DocumentItem>
   </div>
 </template>
+-->
