@@ -11,5 +11,7 @@
   // To avoid build problems with error:
   // error TS7016: Could not find a declaration file for module '../config/config.js
   // thread - https://github.com/vitejs/vite/discussions/14159
-  "allowJs": true
+  "compilerOptions": {
+    "allowJs": true
+  }
 }
