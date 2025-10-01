@@ -38,14 +38,15 @@ const dataCalls = {
     fetchDocuments();
 
     return {
-      data, loading
+      data,
+      loading,
     };
   },
 
   /**
    * Get Single Document
-   * @param {*} docId 
-   * @returns 
+   * @param {*} docId
+   * @returns
    */
   getOneDoc: function getOneDoc(docId) {
     const id = docId;
@@ -64,12 +65,9 @@ const dataCalls = {
 
         loading.value = false;
         if (responseData) {
-          data.doc = [responseData]
-        }
-        else data.doc = null;
-      }
-
-      catch (error) {
+          data.doc = [responseData];
+        } else data.doc = null;
+      } catch (error) {
         return { error, loading };
       }
     };
@@ -77,7 +75,8 @@ const dataCalls = {
     fetchDocuments(id);
 
     return {
-      data, loading
+      data,
+      loading,
     };
   },
 
@@ -99,22 +98,21 @@ const dataCalls = {
         const response = await fetch(`${API}/document/`, {
           body: JSON.stringify({ id: `${id}` }),
           headers: {
-            "content-type": "application/json"
+            "content-type": "application/json",
           },
-          method: "DELETE"
+          method: "DELETE",
         });
 
         const responseData = await response.json();
 
-        // loading.value = false;
+        loading.value = false;
 
         if (responseData) {
-          data.doc = this.getDocs()
+          return await this.getDocs();
+        } else {
+          // data.doc = null;
         }
-        else data.doc = null;
-      }
-
-      catch (error) {
+      } catch (error) {
         console.log(error);
       }
     };
@@ -131,7 +129,6 @@ const dataCalls = {
    * @returns Get all documents
    */
   getAll: async function getAll() {
-
     const loading = ref(false);
 
     loading.value = true;
@@ -169,8 +166,8 @@ const dataCalls = {
     data.doc = responseData;
 
     return data;
-  }
-}
+  },
+};
 
 // </script >
 export default dataCalls;
