@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="about">
+  <div class="create">
     <h1>Create a new document</h1>
     <CreateItem>
     </CreateItem>

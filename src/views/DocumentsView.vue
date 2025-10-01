@@ -1,22 +1,17 @@
 <script setup>
 import DocItem from "@/components/DocItem.vue";
-import { data, loading, fetchDocuments, dataCalls } from "../components/DataProvider";
-import { onMounted, onUnmounted, ref } from "vue";
+import { allDocs, loading, fetchDocuments, dataCalls } from "../components/DataComposable.js";
+import { onMounted, onUnmounted } from "vue";
 import router from "../router/index.js";
 
 let updateInterval
-
-async function updateDocs () {
-  fetchDocuments();
-}
 
 // Delete Document
 async function deleteDocument(id) {
   console.log(id);
   await dataCalls.deleteOne(id);
 
-  // await nextTick();
-  updateDocs();
+  fetchDocuments();
 }
 
 // Redirect to update document
@@ -30,14 +25,8 @@ async function updateDocument(id) {
 }
 
 
-// const { data, loading } = dataCalls.deleteOne("68db823a95c2def26cc801d5");
-// const dataObject = dataCalls.getDocs();
-
-// data.value = dataObject.data;
-// loading.value = dataObject.loading;
-
 onMounted(() => {
-  updateDocs();
+  fetchDocuments();
   updateInterval = setInterval(()=>{ updateDocs() }, 60*1000);
 });
 
@@ -50,8 +39,8 @@ onUnmounted(()=> {
 <template>
   <div class="joke-section">
     <p v-if="loading.value">Documents is loading...</p>
-    <p v-if="data.doc === null">Something went wrong..</p>
-    <div v-else v-for="doc in data.doc" :key="doc._id" class="doc-list">
+    <p v-if="allDocs.data === null">Something went wrong..</p>
+    <div v-else v-for="doc in allDocs.data" :key="doc._id" class="doc-list">
       <DocItem :doc="doc"> </DocItem>
       <div class="button-container">
         <button

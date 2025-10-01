@@ -6,10 +6,8 @@
 import { ref, reactive } from "vue";
 import { API } from "../config/config.js";
 
-// GLOBALS som i
-// https://vuejs.org/guide/reusability/composables#async-state-example
-const data = reactive({
-  doc: [],
+const allDocs = reactive({
+  data: [],
 });
 
 const loading = ref(false);
@@ -21,10 +19,14 @@ const fetchDocuments = async () => {
   const response = await fetch(API);
   const responseData = await response.json();
 
-  data.doc = responseData;
+  allDocs.data = responseData;
 
   loading.value = false;
 };
+
+// const singleDoc = reactive({
+//   data: [],
+// });
 
 // CRUD OPERATIONS
 
@@ -33,11 +35,11 @@ const dataCalls = {
    * Get all Documents
    * @returns Object, loading
    */
-  getDocs: function getDocuments() {
+  getAllDocs: function getAllDocs() {
     fetchDocuments();
 
     return {
-      data,
+      allDocs,
       loading,
     };
   },
@@ -49,13 +51,10 @@ const dataCalls = {
    */
   getOneDoc: function getOneDoc(docId) {
     const id = docId;
-    const data = reactive({
-      doc: [],
-    });
 
     const loading = ref(false);
 
-    const fetchDocuments = async (id) => {
+    const fetchDocument = async (id) => {
       loading.value = true;
 
       try {
@@ -64,18 +63,20 @@ const dataCalls = {
 
         loading.value = false;
         if (responseData) {
-          data.doc = [responseData];
-        } else data.doc = null;
+          singleDoc.data = [responseData];
+        } else {
+          singleDoc.data = null;
+        }
       } catch (error) {
         return { error, loading };
       }
     };
 
-    fetchDocuments(id);
+    fetchDocument(id);
 
     return {
-      data,
-      loading,
+      singleDoc,
+      singleLoading,
     };
   },
 
@@ -84,9 +85,6 @@ const dataCalls = {
    */
   deleteOne: function deleteOne(docId) {
     const id = docId;
-    // const data = reactive({
-    //   doc: [],
-    // });
 
     const loading = ref(false);
 
@@ -106,11 +104,12 @@ const dataCalls = {
 
         loading.value = false;
 
-        if (responseData) {
-          return await this.getDocs();
-        } else {
-          // data.doc = null;
-        }
+        // if (responseData) {
+        //   return await this.getDocs();
+        // } else {
+        //   // data.doc = null;
+        // }
+        return responseData;
       } catch (error) {
         console.log(error);
       }
@@ -122,51 +121,7 @@ const dataCalls = {
     //   data, loading
     // };
   },
-
-  /**
-   * Alternative function
-   * @returns Get all documents
-   */
-  getAll: async function getAll() {
-    const loading = ref(false);
-
-    loading.value = true;
-
-    const response = await fetch(API);
-    const responseData = await response.json();
-
-    let data = this.getData(responseData);
-    // return (this.getData(responseData));
-
-    loading.value = false;
-
-    return { data, loading };
-  },
-
-  /**
-   * Reuse method to make code more dry
-   * @param {json} responseData parsed data from fetch
-   */
-  getData: function getData(responseData) {
-    // const loading = ref(false);
-
-    // loading.value = true;
-    const data = reactive({
-      doc: [
-        {
-          _id: null,
-          title: null,
-          content: null,
-        },
-      ],
-    });
-
-    // loading.value = false;
-    data.doc = responseData;
-
-    return data;
-  },
 };
 
 // </script >
-export { data, loading, fetchDocuments, dataCalls };
+export { allDocs, loading, fetchDocuments, dataCalls };

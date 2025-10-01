@@ -34,21 +34,19 @@ async function createDocument() {
 
 <template>
   <form @submit.prevent="createDocument" id="create">
-    <label for="title">
-      <input type="text" id="title" name="title" v-model="title" required />
-    </label>
-    <label for="content">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" v-model="title" required />
+    <label for="content">Content</label>
       <textarea
         type="text"
         id="content"
         name="content"
-        rows="5"
-        cols="33"
+        rows="20"
+        cols="50"
         v-model="content"
         required
       ></textarea>
-    </label>
-
+    <p>Enter your content and press submit:</p>
     <button form="create" value="submit">Submit</button>
   </form>
 </template>
