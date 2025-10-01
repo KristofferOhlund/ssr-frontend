@@ -43,23 +43,22 @@ async function updateDocument() {
 
 <!-- TEMPLATE -->
 <template>
-  <p>Make updates and press submit:</p>
   <form v-if="documentData" @submit.prevent="updateDocument" id="update">
-    <label for="title">
+    <label for="title">Title</label>
       <input type="text" id="title" name="title" v-model="documentData.title" required />
-    </label>
-    <label for="content">
+
+    <label for="content">Content</label>
       <textarea
         type="text"
         id="content"
         name="content"
-        rows="5"
-        cols="33"
+        rows="20"
+        cols="50"
+        resize="none"
         v-model="documentData.content"
         required
       ></textarea>
-    </label>
-
+    <p>Make updates and press submit:</p>
     <button form="update" value="submit">Submit</button>
   </form>
 </template>

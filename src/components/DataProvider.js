@@ -6,35 +6,34 @@
 import { ref, reactive } from "vue";
 import { API } from "../config/config.js";
 
+// GLOBALS som i
+// https://vuejs.org/guide/reusability/composables#async-state-example
+const data = reactive({
+  doc: [],
+});
+
+const loading = ref(false);
+
+const fetchDocuments = async () => {
+  console.log("fetching documents...");
+  loading.value = true;
+
+  const response = await fetch(API);
+  const responseData = await response.json();
+
+  data.doc = responseData;
+
+  loading.value = false;
+};
+
+// CRUD OPERATIONS
+
 const dataCalls = {
   /**
    * Get all Documents
    * @returns Object, loading
    */
   getDocs: function getDocuments() {
-    const data = reactive({
-      doc: [
-        // {
-        //   _id: null,
-        //   title: null,
-        //   content: null,
-        // },
-      ],
-    });
-
-    const loading = ref(false);
-
-    const fetchDocuments = async () => {
-      loading.value = true;
-
-      const response = await fetch(API);
-      const responseData = await response.json();
-
-      data.doc = responseData;
-
-      loading.value = false;
-    };
-
     fetchDocuments();
 
     return {
@@ -170,4 +169,4 @@ const dataCalls = {
 };
 
 // </script >
-export default dataCalls;
+export { data, loading, fetchDocuments, dataCalls };
