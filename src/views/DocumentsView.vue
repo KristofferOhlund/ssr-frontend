@@ -1,22 +1,26 @@
-<script setup lang="ts">
-import DocumentList from '../components/DocumentList.vue'
+<script setup>
+import DocumentList from "@/components/DocumentList.vue";
+import { allDocs, loading, fetchDocuments } from "../components/DataComposable.js";
+import { onMounted, onUnmounted } from "vue";
+
+let updateInterval
+
+
+onMounted(() => {
+  fetchDocuments();
+  updateInterval = setInterval(()=>{ updateDocs() }, 60*1000);
+});
+
+onUnmounted(()=> {
+  clearInterval(updateInterval);
+})
+
 </script>
 
 <template>
-  <div class="about">
-    <h1>All documents</h1>
-      <DocumentList />
-  </div>
+  <DocumentList :allDocs="allDocs" :loading="loading" />
 </template>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-}
+
 </style>

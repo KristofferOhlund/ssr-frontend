@@ -1,51 +1,20 @@
-<script setup lang="ts">
-import DocumentItem from "./DocumentItem.vue";
-import DocumentationIcon from "./icons/IconDocumentation.vue";
-import { ref, onMounted } from "vue";
-import { API } from "../config/config.js";
+<script setup>
+import DocItem from "@/components/DocItem.vue";
+import { fetchDocuments, dataCalls } from "../components/DataComposable.js";
 import router from "../router/index.js";
 
-const allDocuments = ref([{ title: "Loading files..." }]);
+defineProps(["allDocs", "loading"]);
 
-/**
- * Fetch all documents from database
- */
-async function getDocumentList() {
-  const res = await fetch(API);
-  allDocuments.value = await res.json();
-}
-
-/**
- * Init loader - fetch on component mount
- */
-onMounted(async () => {
-  await getDocumentList();
-});
-
-/**
- * Delete Document from database
- * @param id string
- */
-async function deleteObject(id) {
+// Delete Document
+async function deleteDocument(id) {
   console.log(id);
-  await fetch(`${API}/document`, {
-    body: JSON.stringify({ id: id }),
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "DELETE",
-  });
+  await dataCalls.deleteOne(id);
 
-  // Update data
-  getDocumentList();
+  fetchDocuments();
 }
 
-/**
- * Update Document
- * DocumentList.vue:47 [Vue Router warn]: Path "update" was passed with params but they will be ignored. Use a named route alongside params instead.
- *
- */
-function updateDocument(id) {
+// Redirect to update document
+async function updateDocument(id) {
   router.push({
     name: "update",
     params: {
@@ -56,26 +25,50 @@ function updateDocument(id) {
 </script>
 
 <template>
-  <!-- <div v-if="allDocuments.length > 0"> -->
-  <div v-for="document in allDocuments" :key="document._id">
-    <DocumentItem>
-      <template #icon>
-        <DocumentationIcon />
-      </template>
-
-      <template #heading>
-        <a :href="`document/${document._id}`">{{ document.title }}</a>
-      </template>
-
-      {{ document.content }}
-
-      <template #delete>
-        <button :value="document._id" @click="deleteObject(document._id)">Delete</button>
-      </template>
-
-      <template #update>
-        <button :value="document._id" @click="updateDocument(document._id)">Update</button>
-      </template>
-    </DocumentItem>
+  <div class="joke-section">
+    <p v-if="loading.value">Documents is loading...</p>
+    <p v-if="allDocs.data === null">Something went wrong..</p>
+    <div v-else v-for="doc in allDocs.data" :key="doc._id" class="doc-list">
+      <DocItem :doc="doc"> </DocItem>
+      <div class="button-container">
+        <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
+        <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
+          Delete
+        </button>
+      </div>
+      <hr />
+    </div>
   </div>
 </template>
+
+<style>
+.button-container {
+  padding: 0rem calc(var(--section-gap) / 4) 1rem 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 2rem;
+}
+
+hr {
+  border: 1px solid #333;
+}
+
+.btn {
+  color: var(--color-text);
+  background-color: transparent;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--color-text);
+  border-radius: 5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  background-color: rgb(0, 189, 126);
+  color: var(--color-background);
+}
+
+.btn-delete:hover {
+  background-color: rgb(228, 44, 44);
+}
+</style>
