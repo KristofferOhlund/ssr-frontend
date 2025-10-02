@@ -1,11 +1,9 @@
 <script setup>
 import DocItem from "@/components/DocItem.vue";
-import { fetchDocuments } from "../components/DataComposable.js";
+import { fetchDocuments, dataCalls } from "../components/DataComposable.js";
 import router from "../router/index.js";
 
-defineProps(['allDocs', 'loading']);
-
-
+defineProps(["allDocs", "loading"]);
 
 // Delete Document
 async function deleteDocument(id) {
@@ -24,8 +22,6 @@ async function updateDocument(id) {
     },
   });
 }
-
-
 </script>
 
 <template>
@@ -35,19 +31,17 @@ async function updateDocument(id) {
     <div v-else v-for="doc in allDocs.data" :key="doc._id" class="doc-list">
       <DocItem :doc="doc"> </DocItem>
       <div class="button-container">
-        <button
-          :value="doc._id"
-          @click="updateDocument(doc._id)"
-          class="btn">Update</button>
-        <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">Delete</button>
+        <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
+        <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
+          Delete
+        </button>
       </div>
-      <hr>
+      <hr />
     </div>
   </div>
 </template>
 
 <style>
-
 .button-container {
   padding: 0rem calc(var(--section-gap) / 4) 1rem 0;
   display: flex;
@@ -77,5 +71,4 @@ hr {
 .btn-delete:hover {
   background-color: rgb(228, 44, 44);
 }
-
 </style>

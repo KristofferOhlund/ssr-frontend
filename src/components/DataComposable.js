@@ -25,22 +25,6 @@ async function fetchDocuments() {
   return responseData;
 }
 
-// const fetchDocuments = async () => {
-//   console.log("fetching documents...");
-//   loading.value = true;
-
-//   const response = await fetch(API);
-//   const responseData = await response.json();
-
-//   allDocs.data = responseData;
-
-//   loading.value = false;
-// };
-
-// const singleDoc = reactive({
-//   data: [],
-// });
-
 // CRUD OPERATIONS
 
 const dataCalls = {
