@@ -1,11 +1,12 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import DocumentsView from "../views/DocumentsView.vue";
 import CreateView from "@/views/CreateView.vue";
 import UpdateView from "@/views/UpdateView.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
+  // history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
@@ -32,7 +33,7 @@ const router = createRouter({
       path: "/update/:id",
       name: "update",
       component: UpdateView,
-      props: true
+      props: true,
       // props: (route) => (JSON.parse(route.params)),
     },
   ],
