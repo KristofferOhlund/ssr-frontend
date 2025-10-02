@@ -12,7 +12,7 @@ const allDocs = reactive({
 
 const loading = ref(false);
 
-const fetchDocuments = async () => {
+async function fetchDocuments() {
   console.log("fetching documents...");
   loading.value = true;
 
@@ -20,9 +20,22 @@ const fetchDocuments = async () => {
   const responseData = await response.json();
 
   allDocs.data = responseData;
-
   loading.value = false;
-};
+
+  return responseData;
+}
+
+// const fetchDocuments = async () => {
+//   console.log("fetching documents...");
+//   loading.value = true;
+
+//   const response = await fetch(API);
+//   const responseData = await response.json();
+
+//   allDocs.data = responseData;
+
+//   loading.value = false;
+// };
 
 // const singleDoc = reactive({
 //   data: [],
@@ -120,6 +133,12 @@ const dataCalls = {
     // return {
     //   data, loading
     // };
+  },
+  testFetch: async function testFetch() {
+    const res = await fetch(API);
+    const docs = await res.json();
+
+    return docs;
   },
 };
 
