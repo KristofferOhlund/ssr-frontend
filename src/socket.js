@@ -7,12 +7,10 @@ export const state = reactive({
   barEvents: [],
 });
 
-// "undefined" means the URL will be computed from the `window.location` object
-// const URL = process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000";
+// Porten måste vara densamma som socket i servern lyssnar på!
 const URL = "http://localhost:3000";
 
 export const socket = io(URL);
-
 // // The socket object can also be initialized without connecting right away with the autoConnect option:
 // // This can be useful for example when the user must provide some credentials before connecting.
 // export const socket = io(URL, {
