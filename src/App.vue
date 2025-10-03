@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import { state } from "./socket.js";
+console.log(state);
 </script>
 
 <template>
@@ -14,6 +16,8 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/documents">Documents</RouterLink>
         <RouterLink to="/create">Create new doc</RouterLink>
+        <RouterLink to="/socket">socket</RouterLink>
+        <RouterLink to="/connection-state">Connection</RouterLink>
       </nav>
     </div>
   </header>
