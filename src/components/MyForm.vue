@@ -1,8 +1,5 @@
 <script>
 import { socket } from "@/socket";
-import ConnectionManager from "./ConnectionManager.vue";
-
-ConnectionManager.methods.connect();
 
 export default {
   name: "MyForm",
