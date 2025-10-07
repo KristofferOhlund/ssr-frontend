@@ -13,7 +13,7 @@ export default defineConfig({
     },
   },
   // GitHub pages
-  base: "/ssr-frontend/",
+  base: "https://kristofferohlund.github.io/ssr-frontend/",
   test: {
     // enable jest-like global test APIs
     globals: true,
