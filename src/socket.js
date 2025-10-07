@@ -11,9 +11,8 @@ export const state = reactive({
 // const URL = "http://localhost:3000";
 const URL = "https://jsramverk-sidr24.azurewebsites.net/";
 
-export const socket = io(URL, {
-  transports: ["websockets"],
-});
+export const socket = io(URL);
+console.log(socket);
 // // The socket object can also be initialized without connecting right away with the autoConnect option:
 // // This can be useful for example when the user must provide some credentials before connecting.
 // export const socket = io(URL, {

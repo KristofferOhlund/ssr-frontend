@@ -31,6 +31,7 @@ async function getDocument(id) {
 }
 
 function emit(value) {
+  console.log("change, emit", value);
   socket.emit("update", documentData.value);
 }
 
