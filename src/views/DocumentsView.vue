@@ -1,6 +1,6 @@
 <script setup>
 import DocumentList from "@/components/DocumentList.vue";
-import { allDocs, loading, fetchDocuments } from "../components/DataComposable.js";
+import { allDocs, loading, fetchDocuments } from "../components/composables/DataComposable.js";
 import { onMounted, onUnmounted } from "vue";
 
 let updateInterval;

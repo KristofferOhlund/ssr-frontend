@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { onMounted, ref } from "vue";
 import { API } from "../config/config.js";
 import router from "../router/index.js";
-import { socket } from "@/socket";
+import { socket } from "./socket/socket.js";
 
 // Get's ID from parent (documentList)
 const props = defineProps({

@@ -3,8 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import DocumentsView from "../views/DocumentsView.vue";
 import CreateView from "@/views/CreateView.vue";
 import UpdateView from "@/views/UpdateView.vue";
-import MyForm from "@/components/MyForm.vue";
-import ConnectionState from "@/components/ConnectionState.vue";
+import ConnectionState from "../components/socket/ConnectionState.vue";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -39,12 +38,6 @@ const router = createRouter({
       // props: (route) => (JSON.parse(route.params)),
     },
     {
-      path: "/socket",
-      name: "socket",
-      component: MyForm,
-      props: true,
-    },
-      {
       path: "/connection-state",
       component: ConnectionState,
       props: true,

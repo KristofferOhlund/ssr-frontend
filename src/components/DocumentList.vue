@@ -1,6 +1,6 @@
 <script setup>
 import DocItem from "@/components/DocItem.vue";
-import { fetchDocuments, dataCalls } from "../components/DataComposable.js";
+import { fetchDocuments, dataCalls } from "./composables/DataComposable.js";
 import router from "../router/index.js";
 
 defineProps(["allDocs", "loading"]);
