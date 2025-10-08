@@ -14,7 +14,7 @@ const URL = "https://jsramverk-sidr24.azurewebsites.net";
 export const socket = io(URL, {
   transports: ["websocket"],
 });
-console.log("socket: ", socket);
+
 // // The socket object can also be initialized without connecting right away with the autoConnect option:
 // // This can be useful for example when the user must provide some credentials before connecting.
 // export const socket = io(URL, {
