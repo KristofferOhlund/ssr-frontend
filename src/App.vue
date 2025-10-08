@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
+import { state } from "./components/socket/socket.js";
 </script>
 
 <template>
@@ -15,7 +16,9 @@ import { RouterLink, RouterView } from "vue-router";
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/documents">Documents</RouterLink>
         <RouterLink to="/create">Create new doc</RouterLink>
-        <RouterLink to="/connection-state">Connection</RouterLink>
+        <RouterLink to="/connection-state">Connection - {{ state.connected }}</RouterLink>
+        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/register">Register</RouterLink>
       </nav>
     </div>
   </header>
