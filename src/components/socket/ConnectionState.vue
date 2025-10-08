@@ -1,4 +1,5 @@
 <script>
+// DEPRECATED
 import { state } from "./socket.js";
 export default {
   name: "ConnectionState",

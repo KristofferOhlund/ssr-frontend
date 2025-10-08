@@ -1,6 +1,6 @@
 <script>
 import { socket } from "./socket/socket.js";
-
+// DEPRECATED
 export default {
   name: "ConnectionManager",
 
