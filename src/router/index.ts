@@ -4,6 +4,7 @@ import DocumentsView from "../views/DocumentsView.vue";
 import CreateView from "@/views/CreateView.vue";
 import UpdateView from "@/views/UpdateView.vue";
 import ConnectionState from "../components/socket/ConnectionState.vue";
+import UserForm from "../components/forms/UserForm.vue";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -40,6 +41,16 @@ const router = createRouter({
     {
       path: "/connection-state",
       component: ConnectionState,
+      props: true,
+    },
+    {
+      path: "/login",
+      component: UserForm,
+      props: true,
+    },
+    {
+      path: "/register",
+      component: UserForm,
       props: true,
     },
   ],
