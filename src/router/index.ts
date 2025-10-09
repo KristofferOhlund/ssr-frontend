@@ -5,6 +5,7 @@ import CreateView from "@/views/CreateView.vue";
 import UpdateView from "@/views/UpdateView.vue";
 import ConnectionState from "../components/socket/ConnectionState.vue";
 import UserForm from "../components/forms/UserForm.vue";
+import LogOut from "../components/forms/LogOut.vue";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -14,6 +15,7 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      props: true,
     },
     {
       path: "/documents",
@@ -46,6 +48,11 @@ const router = createRouter({
     {
       path: "/login",
       component: UserForm,
+      props: true,
+    },
+    {
+      path: "/logout",
+      component: LogOut,
       props: true,
     },
     {
