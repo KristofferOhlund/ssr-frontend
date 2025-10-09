@@ -2,13 +2,15 @@
 import { ref } from 'vue'
 import { API } from "../../config/config.js";
 import { useRoute } from 'vue-router'
+import { User } from "../composables/UserComposable.js";
+import router from "../../router/index.js";
 
 // Dynamic route handler
 // route = current route aka /login | /register
 let route = useRoute()
 
-const user = ref({
-    userName: "",
+const userInput = ref({
+    email: "",
     password: ""
 })
 
@@ -17,46 +19,54 @@ const user = ref({
 
 async function handleUser() {
     const userObject = {
-        ...user.value
+        ...userInput.value
     };
 
-    try {
-        const path = route.path.replace("/", "");
-        const response = await fetch(`${API}${path}`, {
-            body: JSON.stringify(userObject),
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'POST'
-        });
+    const path = route.path.replace("/", "");
 
-        if (response.status === 200) {
-            const result = await response.json();
-            console.log(result);
+    if (path === "login") {
+        User.IsLoggedIn = true;
 
-            if (result.data?.type === "success") {
-                auth.token = result.data.token;
-                loggedIn = true;
-                console.log("DU har loggat in")
-                return "ok";
-            }
-        }
+        router.push({
+        name: "documents",
+        params: {
+        user: User,
+        },
+    });
 
-        return "not ok";
-    } catch (error) {
-        console.error(error);
-    }
-}
+    // try {
+    //     const path = route.path.replace("/", "");
+    //     const response = await fetch(`${API}auth/${path}`, {
+    //         body: JSON.stringify(userObject),
+    //         headers: {
+    //             'content-type': 'application/json'
+    //         },
+    //         method: 'POST'
+    //     });
+
+    //     if (response.status === 200) {
+    //         const result = await response.json();
+    //         if (result.loggedIn === "true") {
+    //             User.IsloggedIn = true;
+    //         }
+    //         console.log(User);
+            
+            
+    //     }
+
+    //     return "not ok";
+    // } catch (error) {
+    //     console.error(error);
+    // }
+}}
 </script>
 
 <template>
   <form @submit.prevent="handleUser" id="handleUser">
-    <label for="title" class="green">Username</label>
-    <input type="text" id="title" name="title" v-model="user.userName"required />
-    <label for="content" class="green">Email</label>
-    <!--<input type="email" id="email" name="email" required></input>
-    <label for="password" class="green">Password</label>-->
-    <input type="password" id="password" name="password" v-model="user.password" required></input>
+    <label for="email" class="green">Email</label>
+    <input type="text" id="email" name="email" v-model="userInput.email" required />
+    <label for="password" class="green">Password</label>
+    <input type="password" id="password" name="password" v-model="userInput.password" required></input>
     <button class="formButton" value="submit"> {{ route.path.replace("/", "").toUpperCase() }}</button>
   </form>
 </template>
