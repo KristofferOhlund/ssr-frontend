@@ -1,5 +1,14 @@
 <script setup>
-async function logOUt() {}
+import { User } from "../composables/UserComposable.js";
+import router from "../../router/index.js";
+
+/**
+ * Logout user
+ */
+async function logOut() {
+  User.isLoggedIn = false;
+  router.push({ name: "home" });
+}
 </script>
 
 <template>
