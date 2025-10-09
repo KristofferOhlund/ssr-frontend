@@ -3,7 +3,9 @@ import { API } from "../../config/config.js";
 
 
 export const User = ref({
-    isLoggedIn: true,
+    isLoggedIn: false,
+    name: "kalle",
+    email: "",
     token: "",
     docs: []
 });
