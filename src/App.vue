@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import { state } from "./components/socket/socket.js";
+import { User } from "./components/composables/UserComposable.js";
 </script>
-
 <template>
   <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.png" width="125" height="125" />
@@ -17,8 +17,13 @@ import { state } from "./components/socket/socket.js";
         <RouterLink to="/documents">Documents</RouterLink>
         <RouterLink to="/create">Create new doc</RouterLink>
         <RouterLink to="/connection-state">Connection - {{ state.connected }}</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
-        <RouterLink to="/register">Register</RouterLink>
+        <div v-if="User.isLoggedIn">
+          <RouterLink to="/logout">Logout</RouterLink>
+        </div>
+        <div v-else>
+          <RouterLink to="/login">Login</RouterLink>
+          <RouterLink to="/register">Register</RouterLink>
+        </div>
       </nav>
     </div>
   </header>
