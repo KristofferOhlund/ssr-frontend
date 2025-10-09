@@ -1,18 +1,28 @@
 <script setup>
 import DocItem from "@/components/DocItem.vue";
 import DocActions from "./composables/DocumentActions.js";
+import { User } from "./composables/UserComposable.js";
 
 defineProps(["allDocs", "loading"]);
+
+/**
+ * Share document
+ * @param id string
+ */
+function shareDocument(id) {
+  console.log("sharing document");
+}
 </script>
 
 <template>
-  <h1>JAG ÄR EN USER</h1>
+  <h1>{{ User.name }} dokument</h1>
   <div class="joke-section">
     <p v-if="loading.value">Documents is loading...</p>
     <p v-if="allDocs.data === null">Something went wrong..</p>
     <div v-else v-for="doc in allDocs.data" :key="doc._id">
       <DocItem :doc="doc"> </DocItem>
       <div class="button-container">
+        <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
         <button :value="doc._id" @click="DocActions.updateDocument(doc._id)" class="btn">
           Update
         </button>
