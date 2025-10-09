@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { API } from "../../config/config.js";
 import { useRoute } from 'vue-router'
 import { User } from "../composables/UserComposable.js";
@@ -14,55 +14,56 @@ const userInput = ref({
     password: ""
 })
 
-// kalle
-// password123
+const jumbo = ref(null);
 
 async function handleUser() {
     const userObject = {
         ...userInput.value
     };
 
-    const path = route.path.replace("/", "");
+    try {
+        const path = route.path.replace("/", "");
+        const response = await fetch(`${API}auth/${path}`, {
+            body: JSON.stringify(userObject),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST'
+        });
 
-    if (path === "login") {
-        User.IsLoggedIn = true;
-
-        router.push({
-        name: "documents",
-        params: {
-        user: User,
-        },
-    });
-
-    // try {
-    //     const path = route.path.replace("/", "");
-    //     const response = await fetch(`${API}auth/${path}`, {
-    //         body: JSON.stringify(userObject),
-    //         headers: {
-    //             'content-type': 'application/json'
-    //         },
-    //         method: 'POST'
-    //     });
-
-    //     if (response.status === 200) {
-    //         const result = await response.json();
-    //         if (result.loggedIn === "true") {
-    //             User.IsloggedIn = true;
-    //         }
-    //         console.log(User);
-            
-            
-    //     }
-
-    //     return "not ok";
-    // } catch (error) {
-    //     console.error(error);
-    // }
-}}
+        // 201 == user created
+        // redirect to login
+        if (response.status === 201) {
+            router.push({
+                name: "login",
+            })}
+        
+        // 200 = logged in
+        else if (response.status === 200) {
+            router.push({
+                name: `documents`,
+            })}
+        
+        // anything but 201, 200
+        else {
+            const result = await response.json();
+            jumbo.value = result.message;
+        }
+        }
+              
+    catch (error) {
+        console.error(error);
+    }
+}
 </script>
 
 <template>
+    
+    
   <form @submit.prevent="handleUser" id="handleUser">
+    <div class="error" v-if="jumbo">
+        <h3>{{ jumbo }}</h3>
+    </div>
     <label for="email" class="green">Email</label>
     <input type="text" id="email" name="email" v-model="userInput.email" required />
     <label for="password" class="green">Password</label>
@@ -101,5 +102,17 @@ form * {
 
 input {
     height: 2rem;
+}
+
+.error {
+    background-color: #E42C2C;
+    border-radius: 5px;
+    height: 3rem;
+    text-align: center;
+    align-content: center;
+    font-weight: bold;
+    box-shadow: inset 2px lightcyan;
+    color: #fff;
+    /* font-size: 1.2rem; */
 }
 </style>
