@@ -1,27 +1,8 @@
 <script setup>
 import DocItem from "@/components/DocItem.vue";
-import { fetchDocuments, dataCalls } from "./composables/DataComposable.js";
-import router from "../router/index.js";
+import DocActions from "./composables/DocumentActions.js";
 
 defineProps(["allDocs", "loading"]);
-
-// Delete Document
-async function deleteDocument(id) {
-  console.log(id);
-  await dataCalls.deleteOne(id);
-
-  fetchDocuments();
-}
-
-// Redirect to update document
-async function updateDocument(id) {
-  router.push({
-    name: "update",
-    params: {
-      id: id,
-    },
-  });
-}
 </script>
 
 <template>
@@ -31,8 +12,10 @@ async function updateDocument(id) {
     <div v-else v-for="doc in allDocs.data" :key="doc._id" class="doc-list">
       <DocItem :doc="doc"> </DocItem>
       <div class="button-container">
-        <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
-        <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
+        <button :value="doc._id" @click="DocActions.updateDocument(doc._id)" class="btn">
+          Update
+        </button>
+        <button :value="doc._id" @click="DocActions.deleteDocument(doc._id)" class="btn btn-delete">
           Delete
         </button>
       </div>
