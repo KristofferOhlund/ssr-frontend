@@ -46,8 +46,11 @@ async function handleUser() {
 
     // 200 = logged in
     else if (response.status === 200) {
+      const result = await response.json();
+
       // Update User object
       User.isLoggedIn = true;
+      User.name = result.user ?? "Default namn";
       router.replace({
         name: `home`,
       });
