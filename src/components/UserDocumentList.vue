@@ -2,6 +2,7 @@
 import DocItem from "@/components/DocItem.vue";
 import DocActions from "./composables/DocumentActions.js";
 import { User } from "./composables/UserComposable.js";
+import router from "../router/index.ts";
 
 defineProps(["allDocs", "loading"]);
 
@@ -10,7 +11,12 @@ defineProps(["allDocs", "loading"]);
  * @param id string
  */
 function shareDocument(id) {
-  console.log("sharing document");
+  router.push({
+    name: "share",
+    params: {
+      id: id,
+    },
+  });
 }
 </script>
 
