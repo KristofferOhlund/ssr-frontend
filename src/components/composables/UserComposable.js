@@ -5,7 +5,7 @@ import { API } from "../../config/config.js";
 export const User = reactive({
     isLoggedIn: false,
     username: "",
-    email: "",
+    email: "sample@gmail.com",
     token: "",
     docs: []
 });
