@@ -1,4 +1,5 @@
 import router from "../../router/index.ts";
+import { API } from "../../config/config.js";
 
 /**
  * Module for handling Documents
@@ -25,7 +26,7 @@ const DocActions = {
     // Share document to user
     shareDocument: async function shareDocument(mailBody) {
         try {
-            await fetch(`${API}/document/${mailBody.id}/invite`, {
+            await fetch(`${API}/document/${mailBody.docId}/invite`, {
                 body: JSON.stringify(`${mailBody}`),
                 headers: {
                     "content-type": "application/json",
