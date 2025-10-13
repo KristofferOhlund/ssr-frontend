@@ -20,6 +20,23 @@ const DocActions = {
                 id: id,
             },
         });
+    },
+
+    // Share document to user
+    shareDocument: async function shareDocument(mailBody) {
+        try {
+            await fetch(`${API}/document/${mailBody.id}/invite`, {
+                body: JSON.stringify(`${mailBody}`),
+                headers: {
+                    "content-type": "application/json",
+                },
+                method: "POST",
+            });
+        }
+        catch (error) {
+            console.log("Något gick fel.");
+            console.log(error);
+        }
     }
 }
 
