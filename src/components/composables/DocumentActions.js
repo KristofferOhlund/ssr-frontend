@@ -1,25 +1,126 @@
 import router from "../../router/index.ts";
 import { API } from "../../config/config.js";
-import { dataCalls } from "./DataComposable.js";
 import { User } from "./UserComposable.js";
 
 /**
  * Module for handling Documents
  */
 const DocActions = {
-    // Delete Document
-    deleteDocument: async function deleteDocument(id) {
-        console.log(id);
-        await dataCalls.deleteOne(id);
 
-        fetchDocuments();
+    /**
+     * Fetch all Documents where user is 
+     * either Author or collaborator
+     * @param {email} email - for current user
+     */
+    fetchDocuments: async function fetchDocuments(email) {
+        try {
+            const response = await fetch(`${API}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-access-token": User.token,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error on fetchDocuments! Status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            return responseData;
+        } catch (error) {
+            console.error("fetchDocuments error:", error);
+            return [];
+        }
+    },
+
+    /**
+     * Get single Document
+     * @param {id} string DocumentId
+     */
+    getDocument: async function getDocument(id) {
+        try {
+            const response = await fetch(`${API}/document/${id}`, {
+                headers: {
+                    "x-access-token": User.token,
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error on getDocument! Status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            return responseData;
+
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    },
+
+    /**
+     * Create new Doc
+     * @param {Object} document - document title and content
+     */
+    createDocument: async function createDocument(document) {
+        try {
+            const response = await fetch(`${API}/document`, {
+                body: JSON.stringify({
+                    title: `${document.title}`,
+                    content: `${document.content}`,
+                }),
+                headers: {
+                    "content-type": "application/json",
+                    "x-access-token": User.token,
+                },
+                method: "POST",
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error on createDocument! Status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            return responseData;
+        }
+        catch (error) {
+            console.log(error)
+        }
+    },
+
+
+    /**
+     * Delete document with ID
+     * @param {string} id 
+     */
+    deleteDocument: async function deleteDocument(id) {
+        try {
+            const response = await fetch(`${API}/document/`, {
+                body: JSON.stringify({ id: `${id}` }),
+                headers: {
+                    "content-type": "application/json",
+                    "x-access-token": User.token,
+                },
+                method: "DELETE",
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error on Delete! Status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            return responseData;
+        } catch (error) {
+            console.log(error);
+        }
     },
 
     /**
     * Update document in database
     */
     updateDocument: async function updateDocument(documentData) {
-        // console.log(documentData);
         await fetch(`${API}/document`, {
             body: JSON.stringify({
                 id: `${documentData.value._id}`,
@@ -33,13 +134,13 @@ const DocActions = {
             method: "PUT",
         });
 
-        /**
-         * Redirect to all documents route
-         */
         router.push("/documents");
     },
 
-    // Share document to user
+    /**
+     * Share document
+     * @param {Object} mailBody - contains sender, reciever, message
+     */
     shareDocument: async function shareDocument(mailBody) {
         try {
             await fetch(`${API}/document/${mailBody.docId}/invite`, {
