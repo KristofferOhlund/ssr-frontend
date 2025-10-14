@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { API } from "../config/config.js";
-import router from "../router/index.js";
+// import router from "../router/index.js";
 import { socket } from "./socket/socket.js";
+import { User } from "./composables/UserComposable.js";
+import DocActions from "./composables/DocumentActions.js";
 
 // Get's ID from parent (documentList)
 const props = defineProps({
@@ -34,30 +36,43 @@ onMounted(async () => {
 
 // Fetch all documents
 async function getDocument(id) {
-  const res = await fetch(`${API}/document/${id}`);
+  const res = await fetch(`${API}/document/${id}`, {
+    headers: {
+      "x-access-token": User.token,
+    },
+  });
   documentData.value = await res.json();
 }
 
 /**
  * Update document in database
  */
-async function updateDocument() {
-  await fetch(`${API}/document`, {
-    body: JSON.stringify({
-      id: `${documentData.value._id}`,
-      title: `${documentData.value.title}`,
-      content: `${documentData.value.content}`,
-    }),
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "PUT",
-  });
+// async function updateDocument() {
+//   await fetch(`${API}/document`, {
+//     body: JSON.stringify({
+//       id: `${documentData.value._id}`,
+//       title: `${documentData.value.title}`,
+//       content: `${documentData.value.content}`,
+//     }),
+//     headers: {
+//       "content-type": "application/json",
+//       "x-access-token": User.token,
+//     },
+//     method: "PUT",
+//   });
 
-  /**
-   * Redirect to all documents route
-   */
-  router.push("/documents");
+//   /**
+//    * Redirect to all documents route
+//    */
+//   router.push("/documents");
+// }
+
+/**
+ * Update document in database
+ * Use DocActions insted of Component
+ */
+function updateDocument() {
+  DocActions.updateDocument(documentData);
 }
 </script>
 
