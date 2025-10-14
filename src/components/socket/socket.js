@@ -1,5 +1,6 @@
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import { io } from "socket.io-client";
+import { User } from "../composables/UserComposable.js";
 
 export const state = reactive({
   connected: false,
@@ -7,38 +8,56 @@ export const state = reactive({
   barEvents: [],
 });
 
-// Porten måste vara densamma som socket i servern lyssnar på!
-// const URL = "http://localhost:3000";
-const URL = "https://jsramverk-sidr24.azurewebsites.net";
 
-export const socket = io(URL, {
-  transports: ["websocket"],
-});
+watch(User, () => {
+  if (User.token) {
+    return setupSocketConnection();
+  }
+  destroySocketConnection()
+})
 
-// // The socket object can also be initialized without connecting right away with the autoConnect option:
-// // This can be useful for example when the user must provide some credentials before connecting.
-// export const socket = io(URL, {
-//   autoConnect: false
-// });
+let socket = null;
 
-socket.on("connect", () => {
-  console.log("connecting to socket");
-  state.connected = true;
-});
+function setupSocketConnection() {
+  // Porten måste vara densamma som socket i servern lyssnar på!
+  // const URL = "http://localhost:3000";
+  const URL = "https://jsramverk-sidr24.azurewebsites.net";
 
-socket.on("disconnect", () => {
-  state.connected = false;
-});
 
-socket.on("chat message", (...args) => {
-  console.log("chat mess", ...args);
-  state.messages.push(args);
-});
+  socket = io(URL, {
+    auth: {
+      token: User.token
+    }
+  });
 
-socket.on("bar", (...args) => {
-  state.barEvents.push(args);
-});
+  console.log(User.token);
 
-socket.on("test", (mess) => {
-  console.log(mess);
-});
+  socket.on("connect", () => {
+    console.log("connecting to socket");
+    state.connected = true;
+  });
+
+  socket.on("disconnect", () => {
+    state.connected = false;
+  });
+
+  socket.on("chat message", (...args) => {
+    console.log("chat mess", ...args);
+    state.messages.push(args);
+  });
+
+  socket.on("bar", (...args) => {
+    state.barEvents.push(args);
+  });
+
+  socket.on("test", (mess) => {
+    console.log(mess);
+  });
+
+}
+
+function destroySocketConnection() {
+  socket.close();
+}
+
+export { socket };
