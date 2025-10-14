@@ -32,7 +32,7 @@ async function handleUser() {
 
   try {
     const path = route.path.replace("/", "");
-    const response = await fetch(`${API}auth/${path}`, {
+    const response = await fetch(`${API}/auth/${path}`, {
       body: JSON.stringify(userObject),
       headers: {
         "content-type": "application/json",
