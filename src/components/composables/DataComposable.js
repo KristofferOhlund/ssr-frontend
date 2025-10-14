@@ -2,6 +2,11 @@
 //   <slot :data="data" :loading="loading"></slot>
 // </template>-->
 
+/**
+ * MODULE IS DEPRECATED
+ * USE DOCACTIONS INSTED
+ */
+
 // <script setup>
 import { ref, reactive } from "vue";
 import { API } from "../../config/config.js";
