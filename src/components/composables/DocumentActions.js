@@ -1,5 +1,6 @@
 import router from "../../router/index.ts";
 import { API } from "../../config/config.js";
+import { dataCalls } from "./DataComposable.js";
 
 /**
  * Module for handling Documents
