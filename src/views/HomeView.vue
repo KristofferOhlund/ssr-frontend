@@ -4,7 +4,7 @@ import { User } from "../components/composables/UserComposable.js";
 
 <template>
   <main>
-    <h3 v-if="User.isLoggedIn">Welcome - {{ User.name }}</h3>
+    <h3 v-if="User.isLoggedIn">Welcome - {{ User.user }}</h3>
     <h3 v-else>Welcome! Please login or register</h3>
   </main>
 </template>
