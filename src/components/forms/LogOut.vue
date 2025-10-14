@@ -8,6 +8,7 @@ import { onMounted } from "vue";
  */
 async function logOut() {
   User.isLoggedIn = false;
+  User.token = "";
   router.push({ name: "home" });
 }
 
