@@ -28,8 +28,6 @@ async function handleUser() {
     ...userInput.value,
   };
 
-  console.log(userObject);
-
   try {
     const path = route.path.replace("/", "");
     const response = await fetch(`${API}/auth/${path}`, {
@@ -77,7 +75,7 @@ async function handleUser() {
       <h3>{{ jumbo }}</h3>
     </div>
     <label for="email" class="green">Email</label>
-    <input type="text" id="email" name="email" v-model="userInput.user" required />
+    <input type="email" id="email" name="email" v-model="userInput.user" required />
     <label for="password" class="green">Password</label>
     <input type="password" id="password" name="password" v-model="userInput.password" required />
     <button class="formButton" value="submit">
