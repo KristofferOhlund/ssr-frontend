@@ -15,16 +15,20 @@ watch(route, () => {
 });
 
 const userInput = ref({
-  email: "",
+  user: "",
   password: "",
 });
 
 const jumbo = ref(null);
 
+const hasError = ref(false);
+
 async function handleUser() {
   const userObject = {
     ...userInput.value,
   };
+
+  console.log(userObject);
 
   try {
     const path = route.path.replace("/", "");
@@ -39,9 +43,7 @@ async function handleUser() {
     // 201 == user created
     // redirect to login
     if (response.status === 201) {
-      router.push({
-        name: "login",
-      });
+      jumbo.value = "User created successfully!";
     }
 
     // 200 = logged in
@@ -61,6 +63,7 @@ async function handleUser() {
     else {
       const result = await response.json();
       jumbo.value = result.message;
+      hasError.value = true;
     }
   } catch (error) {
     console.error(error);
@@ -70,11 +73,11 @@ async function handleUser() {
 
 <template>
   <form @submit.prevent="handleUser" id="handleUser">
-    <div class="error" v-if="jumbo">
+    <div class="jumbo" id="jumbo" v-if="jumbo" :class="{ error: hasError }">
       <h3>{{ jumbo }}</h3>
     </div>
     <label for="email" class="green">Email</label>
-    <input type="text" id="email" name="email" v-model="userInput.email" required />
+    <input type="text" id="email" name="email" v-model="userInput.user" required />
     <label for="password" class="green">Password</label>
     <input type="password" id="password" name="password" v-model="userInput.password" required />
     <button class="formButton" value="submit">
@@ -115,8 +118,7 @@ input {
   height: 2rem;
 }
 
-.error {
-  background-color: #e42c2c;
+.jumbo {
   border-radius: 5px;
   height: 3rem;
   text-align: center;
@@ -124,6 +126,14 @@ input {
   font-weight: bold;
   box-shadow: inset 2px lightcyan;
   color: #fff;
-  /* font-size: 1.2rem; */
+  background-color: green;
 }
+
+.error {
+  background-color: #e42c2c;
+}
+
+/* .success {
+  background-color: green;
+} */
 </style>
