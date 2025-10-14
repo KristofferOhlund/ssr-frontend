@@ -4,7 +4,7 @@ import DocActions from "./composables/DocumentActions.js";
 import { User } from "./composables/UserComposable.js";
 import router from "../router/index.ts";
 
-defineProps(["allDocs", "loading"]);
+const { allDocs, loading } = defineProps(["allDocs", "loading"]);
 
 /**
  * Share document => redirect to /share
@@ -31,6 +31,18 @@ function updateDocument(id) {
     },
   });
 }
+
+/**
+ * Delete Document
+ * Update allDocs.data
+ */
+async function deleteDocument(id) {
+  const response = await DocActions.deleteDocument(id);
+  // Update docs after delete
+  if (response.deletedCount > 0) {
+    allDocs.data = await DocActions.fetchDocuments(User.email);
+  }
+}
 </script>
 
 <template>
@@ -42,7 +54,7 @@ function updateDocument(id) {
       <div class="button-container">
         <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
         <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
-        <button :value="doc._id" @click="DocActions.deleteDocument(doc._id)" class="btn btn-delete">
+        <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
           Delete
         </button>
       </div>

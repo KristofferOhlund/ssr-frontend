@@ -1,22 +1,36 @@
 <script setup>
 import UserDocumentList from "@/components/UserDocumentList.vue";
 import { User } from "../components/composables/UserComposable.js";
-import { allDocs, loading, fetchDocuments } from "../components/composables/DataComposable.js";
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, reactive, ref } from "vue";
 import checkLogin from "../components/composables/checkLogin.js";
+import DocAction from "../components/composables/DocumentActions.js";
 
 let updateInterval;
+
+/**
+ * Reactive objekt storing all Documents in array
+ */
+const allDocs = reactive({
+  data: [],
+});
+
+const loading = ref(false);
 
 /**
  * Redirect user if not logged in
  * Else fetch documents
  */
-onMounted(() => {
+onMounted(async () => {
   checkLogin();
-  fetchDocuments(User.email);
-  updateInterval = setInterval(() => {
-    fetchDocuments(User.email);
-  }, 60 * 1000);
+  if (User.token) {
+    loading.value = true;
+    allDocs.data = await DocAction.fetchDocuments(User.email);
+    loading.value = false;
+    // check for updates
+    updateInterval = setInterval(() => {
+      fetchDocuments(User.email);
+    }, 60 * 1000);
+  }
 });
 
 onUnmounted(() => {
@@ -25,7 +39,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UserDocumentList v-if="User.isLoggedIn" :allDocs="allDocs" :loading="loading" />
+  <UserDocumentList v-if="User.isLoggedIn && allDocs.data" :allDocs="allDocs" :loading="loading" />
 </template>
 
 <style></style>

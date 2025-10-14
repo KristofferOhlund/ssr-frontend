@@ -1,34 +1,34 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { API } from "../config/config.js";
 import router from "../router/index.js";
+import DocAction from "./composables/DocumentActions.js";
+import checkLogin from "./composables/checkLogin.js";
+
+// Make sure user is logged in
+checkLogin();
 
 const title = ref("");
 const content = ref("");
 
 /**
- * Createa new Document in database
+ * Create new Document
  */
 async function createDocument() {
-  await fetch(`${API}/document`, {
-    body: JSON.stringify({
-      title: `${title.value}`,
-      content: `${content.value}`,
-    }),
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "POST",
-  });
+  const doc = {
+    title: `${title.value}`,
+    content: `${content.value}`,
+  };
 
-  // Clear input
-  title.value = "";
-  content.value = "";
+  const result = await DocAction.createDocument(doc);
 
-  /**
-   * Redirect to all documents route
-   */
-  router.push("/documents");
+  if (result.acknowledged) {
+    // Clear input
+    title.value = "";
+    content.value = "";
+
+    // redirect
+    router.push({ name: "documents" });
+  }
 }
 </script>
 
@@ -37,15 +37,15 @@ async function createDocument() {
     <label for="title">Title</label>
     <input type="text" id="title" name="title" v-model="title" required />
     <label for="content">Content</label>
-      <textarea
-        type="text"
-        id="content"
-        name="content"
-        rows="20"
-        cols="50"
-        v-model="content"
-        required
-      ></textarea>
+    <textarea
+      type="text"
+      id="content"
+      name="content"
+      rows="20"
+      cols="50"
+      v-model="content"
+      required
+    ></textarea>
     <p>Enter your content and press submit:</p>
     <button form="create" value="submit">Submit</button>
   </form>
