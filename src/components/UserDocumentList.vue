@@ -21,7 +21,6 @@ function shareDocument(id) {
 </script>
 
 <template>
-  <h1>{{ User.name }} dokument</h1>
   <div class="joke-section">
     <p v-if="loading.value">Documents is loading...</p>
     <p v-if="allDocs.data === null">Something went wrong..</p>
