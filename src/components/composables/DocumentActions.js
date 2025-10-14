@@ -14,7 +14,7 @@ const DocActions = {
      */
     fetchDocuments: async function fetchDocuments(email) {
         try {
-            const response = await fetch(`${API}`, {
+            const response = await fetch(`${API}/${email}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -27,6 +27,7 @@ const DocActions = {
             }
 
             const responseData = await response.json();
+            console.log(responseData);
             return responseData;
         } catch (error) {
             console.error("fetchDocuments error:", error);
@@ -70,6 +71,7 @@ const DocActions = {
                 body: JSON.stringify({
                     title: `${document.title}`,
                     content: `${document.content}`,
+                    author: `${User.email}`,
                 }),
                 headers: {
                     "content-type": "application/json",
