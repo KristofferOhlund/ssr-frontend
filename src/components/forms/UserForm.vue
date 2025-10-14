@@ -52,7 +52,7 @@ async function handleUser() {
 
       // Update User object
       User.isLoggedIn = true;
-      User.name = result.user ?? "Default namn";
+      User.user = result.user ?? "Default namn";
       User.token = result.jwt;
       router.replace({
         name: `home`,
