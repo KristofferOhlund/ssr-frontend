@@ -24,11 +24,14 @@ onMounted(async () => {
   checkLogin();
   if (User.token) {
     loading.value = true;
-    allDocs.data = await DocAction.fetchDocuments(User.email);
+    const response = await DocAction.fetchDocuments(User.email);
+    allDocs.data = response;
+
     loading.value = false;
     // check for updates
-    updateInterval = setInterval(() => {
-      fetchDocuments(User.email);
+    updateInterval = setInterval(async () => {
+      const response = await DocAction.fetchDocuments(User.email);
+      allDocs.data = response;
     }, 60 * 1000);
   }
 });
