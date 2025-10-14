@@ -7,12 +7,25 @@ import router from "../router/index.ts";
 defineProps(["allDocs", "loading"]);
 
 /**
- * Share document
+ * Share document => redirect to /share
  * @param id string
  */
 function shareDocument(id) {
   router.push({
     name: "share",
+    params: {
+      id: id,
+    },
+  });
+}
+
+/**
+ * Update document => redirect to /update
+ * @param id string
+ */
+function updateDocument(id) {
+  router.push({
+    name: "update",
     params: {
       id: id,
     },
@@ -28,9 +41,7 @@ function shareDocument(id) {
       <DocItem :doc="doc"> </DocItem>
       <div class="button-container">
         <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
-        <button :value="doc._id" @click="DocActions.updateDocument(doc._id)" class="btn">
-          Update
-        </button>
+        <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
         <button :value="doc._id" @click="DocActions.deleteDocument(doc._id)" class="btn btn-delete">
           Delete
         </button>
