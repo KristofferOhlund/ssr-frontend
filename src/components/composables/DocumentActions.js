@@ -145,14 +145,24 @@ const DocActions = {
      */
     shareDocument: async function shareDocument(mailBody) {
         try {
-            await fetch(`${API}/document/${mailBody.docId}/invite`, {
-                body: JSON.stringify(`${mailBody}`),
+            const response = await fetch(`${API}/invite`, {
+                body: JSON.stringify({
+                    docId: `${mailBody.docId}`,
+                    sender: `${mailBody.sender}`,
+                    reciever: `${mailBody.reciever}`,
+                    message: `${mailBody.message}`,
+                }),
                 headers: {
                     "content-type": "application/json",
                     "x-access-token": User.token,
                 },
                 method: "POST",
             });
+            if (!response.ok) {
+                throw new Error(`HTTP error on Share! Status: ${response.status}`);
+            }
+            const result = await response.json();
+            return result;
         }
         catch (error) {
             console.log("Något gick fel.");

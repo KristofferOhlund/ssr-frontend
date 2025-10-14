@@ -11,6 +11,9 @@ const props = defineProps({
 const adress = ref();
 const message = ref();
 
+// Jumbotron
+const jumbo = ref(null);
+
 /**
  * Check if user is loggedIn, else redirect to /login
  */
@@ -28,24 +31,25 @@ async function sendEmail() {
   console.log(message.value);
   const body = {
     docId: `${props.id}`,
-    from: "`${User.email}`",
+    sender: `${User.user}`,
     reciever: `${adress.value}`,
     message: `${message.value}`,
   };
 
-  DocActions.shareDocument(body);
+  const result = await DocActions.shareDocument(body);
+  jumbo.value = `You successfully invited ${adress.value}`;
 }
 </script>
 
 <template>
   <form @submit.prevent="sendEmail">
-    <div class="error" v-if="jumbo">
+    <div class="jumbo" v-if="jumbo">
       <h3>{{ jumbo }}</h3>
     </div>
     <label for="sender" class="green">Sender</label>
-    <input type="email" :value="User.email" readonly />
-    <label for="email" class="green">Invite to Email</label>
-    <input type="email" v-model="adress" />
+    <input type="email" :value="User.user" readonly />
+    <label for="email" class="green">Invite Friend</label>
+    <input type="email" v-model="adress" placeholder="friend.sample@gmail.com" />
     <label for="message" class="green">Message</label>
     <input type="text" v-model="message" />
     <button type="submit" class="formButton">Invite!</button>
