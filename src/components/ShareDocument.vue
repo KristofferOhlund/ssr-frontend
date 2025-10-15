@@ -8,7 +8,7 @@ const props = defineProps({
   id: String,
 });
 
-const adress = ref();
+const reciever = ref();
 const message = ref();
 
 // Jumbotron
@@ -26,18 +26,17 @@ onMounted(() => {
  * Send Invitation
  */
 async function sendEmail() {
-  console.log("Sending Email");
-  console.log(adress.value);
-  console.log(message.value);
   const body = {
     docId: `${props.id}`,
     sender: `${User.user}`,
-    reciever: `${adress.value}`,
+    reciever: `${reciever.value}`,
     message: `${message.value}`,
   };
 
   const result = await DocActions.shareDocument(body);
-  jumbo.value = `You successfully invited ${adress.value}`;
+  if (result.success) {
+    jumbo.value = `You successfully invited ${reciever.value}`;
+  }
 }
 </script>
 
@@ -49,7 +48,7 @@ async function sendEmail() {
     <label for="sender" class="green">Sender</label>
     <input type="email" :value="User.user" readonly />
     <label for="email" class="green">Invite Friend</label>
-    <input type="email" v-model="adress" placeholder="friend.sample@gmail.com" />
+    <input type="email" v-model="reciever" placeholder="friend.sample@gmail.com" />
     <label for="message" class="green">Message</label>
     <input type="text" v-model="message" />
     <button type="submit" class="formButton">Invite!</button>
@@ -88,8 +87,7 @@ input {
   height: 2rem;
 }
 
-.error {
-  background-color: #e42c2c;
+.jumbo {
   border-radius: 5px;
   height: 3rem;
   text-align: center;
@@ -97,6 +95,6 @@ input {
   font-weight: bold;
   box-shadow: inset 2px lightcyan;
   color: #fff;
-  /* font-size: 1.2rem; */
+  background-color: green;
 }
 </style>
