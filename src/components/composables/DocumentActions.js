@@ -71,7 +71,7 @@ const DocActions = {
                 body: JSON.stringify({
                     title: `${document.title}`,
                     content: `${document.content}`,
-                    author: `${User.email}`,
+                    author: `${User.user}`,
                 }),
                 headers: {
                     "content-type": "application/json",
@@ -161,7 +161,8 @@ const DocActions = {
             if (!response.ok) {
                 throw new Error(`HTTP error on Share! Status: ${response.status}`);
             }
-            const result = await response.json();
+            let result = await response.json();
+            result["success"] = true;
             return result;
         }
         catch (error) {
