@@ -1,5 +1,5 @@
 import { test, vi, expect } from "vitest";
-import { fetchDocuments } from "../components/DataComposable.js";
+import { fetchDocuments } from "../components/composables/DataComposable.js";
 import { describe } from "node:test";
 import { API } from "../config/config.js";
 

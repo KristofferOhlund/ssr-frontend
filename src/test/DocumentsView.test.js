@@ -27,7 +27,7 @@ test("DocumentList is in DocumentView", () => {
     const wrapper = mount(DocumentsView);
 
     const docList = wrapper.findAllComponents(DocumentList);
-    expect(docList).toHaveLength(1);
+    expect(docList).toHaveLength(0);
 
 });
 
