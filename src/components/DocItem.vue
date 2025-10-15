@@ -2,7 +2,15 @@
 import { onMounted, ref, watchEffect } from "vue";
 
 const props = defineProps<{
-  doc: { _id: string; title: string; content: string };
+  doc: {
+    _id: string;
+    title: string;
+    content: string;
+    collaborators: Array<string>;
+    author: string;
+  };
+  // If a document is shared by another user, sharedBy = author
+  isShared: false;
 }>();
 </script>
 
@@ -11,6 +19,18 @@ const props = defineProps<{
     <h3 id="title">{{ props.doc.title }}</h3>
     <p id="content">{{ props.doc.content }}</p>
     <p class="id" id="id">{{ props.doc._id }}</p>
+    <div v-if="!props.isShared">
+      <div v-if="props.doc.collaborators">
+        <h3>Dokument delas med:</h3>
+        <ul>
+          <li v-for="collab in props.doc.collaborators">{{ collab }}</li>
+        </ul>
+      </div>
+    </div>
+    <div v-if="props.isShared">
+      <h3>Dokument delas av:</h3>
+      <p>{{ props.doc.author }}</p>
+    </div>
   </div>
 </template>
 
