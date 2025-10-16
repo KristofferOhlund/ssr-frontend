@@ -73,7 +73,8 @@ async function saveCodeDocument() {
 async function updateCodeDocument() {
   // Update title when current date and time
   currentCode.value.title = date;
-  currentCode.value.content += updateCode.value;
+  currentCode.value.content = updateCode.value;
+
   const result = await DocActions.updateDocument(currentCode);
 
   if (result) {
