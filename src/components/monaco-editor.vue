@@ -28,7 +28,7 @@ async function saveCodeDocument() {
   const date = new Date(timestampd).toString().split(" ").slice(0, 5).join(" ");
   const body = {
     title: `Code execution: ${date}`,
-    content: `${decodedOutput.value}`,
+    content: `${code.value}`,
     type: "code",
   };
 
