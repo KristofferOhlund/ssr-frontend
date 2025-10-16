@@ -1,61 +1,58 @@
 <script setup lang="ts">
+/**
+ * MODULE TO CREATE FORM OF TYPE [TYPE]
+ * TYPE IS SELECTED BY USER
+ *
+ * IF CODE - IMPORT CODEFORM
+ * ELSE DOCUMENTFORM
+ */
 import { ref } from "vue";
-import router from "../router/index.js";
-import DocAction from "./composables/DocumentActions.js";
 import checkLogin from "./composables/checkLogin.js";
+import DocumentForm from "./forms/DocumentForm.vue";
+import monacoEditor from "./monaco-editor.vue";
 
 // Make sure user is logged in
 checkLogin();
 
-const title = ref("");
-const content = ref("");
+const textDoc = ref(false);
+const codeDoc = ref(false);
 
-/**
- * Create new Document
- */
-async function createDocument() {
-  const doc = {
-    title: `${title.value}`,
-    content: `${content.value}`,
-  };
-
-  const result = await DocAction.createDocument(doc);
-
-  if (result.acknowledged) {
-    // Clear input
-    title.value = "";
-    content.value = "";
-
-    // redirect
-    router.push({ name: "documents" });
-  }
+function renderDocType(event) {
+  let refType = event.target.value;
+  refType == "textDoc" ? (textDoc.value = true) : (codeDoc.value = true);
 }
 </script>
 
 <template>
-  <form @submit.prevent="createDocument" id="create">
-    <label for="title">Title</label>
-    <input type="text" id="title" name="title" v-model="title" required />
-    <label for="content">Content</label>
-    <textarea
-      type="text"
-      id="content"
-      name="content"
-      rows="20"
-      cols="50"
-      v-model="content"
-      required
-    ></textarea>
-    <p>Enter your content and press submit:</p>
-    <button form="create" value="submit">Submit</button>
-  </form>
+  <div class="doc-type-container">
+    <form v-if="!textDoc && !codeDoc">
+      <h1>Select document Type</h1>
+      <div class="type-btn-container">
+        <button class="btn code" type="submit" value="textDoc" @click="renderDocType($event)">
+          TextDocument
+        </button>
+        <button class="btn doc" type="submit" value="codeDoc" @click="renderDocType($event)">
+          CodeDocument
+        </button>
+      </div>
+    </form>
+  </div>
+  <div v-if="textDoc"><DocumentForm></DocumentForm></div>
+  <div v-else-if="codeDoc">
+    <monacoEditor></monacoEditor>
+  </div>
 </template>
 
 <style scoped>
-form {
-  margin-top: 2rem;
+.doc-type-container {
   display: flex;
   flex-direction: column;
-  position: relative;
+  text-align: center;
+}
+.type-btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
 }
 </style>
