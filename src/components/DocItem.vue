@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref, watchEffect } from "vue";
+/**
+ * DocItem only Displays a documents content
+ * Use DocItem to render all Documents
+ */
 
 const props = defineProps<{
   doc: {
