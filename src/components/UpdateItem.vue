@@ -83,7 +83,7 @@ function updateDocument() {
   </form>
   <monaco-editor
     v-if="documentData && documentData.type === 'code'"
-    v-model:updateCode="documentData"
+    v-model:currentCode="documentData"
   ></monaco-editor>
 </template>
 
