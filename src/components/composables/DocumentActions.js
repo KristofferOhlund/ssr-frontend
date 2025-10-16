@@ -126,20 +126,31 @@ const DocActions = {
     * Update document in database
     */
     updateDocument: async function updateDocument(documentData) {
-        await fetch(`${API}/document`, {
-            body: JSON.stringify({
-                id: `${documentData.value._id}`,
-                title: `${documentData.value.title}`,
-                content: `${documentData.value.content}`,
-            }),
-            headers: {
-                "content-type": "application/json",
-                "x-access-token": User.token,
-            },
-            method: "PUT",
-        });
+        try {
+            const response = await fetch(`${API}/document`, {
+                body: JSON.stringify({
+                    id: `${documentData.value._id}`,
+                    title: `${documentData.value.title}`,
+                    content: `${documentData.value.content}`,
+                    author: `${documentData.value.author}`,
+                    type: `${documentData.value.type}`,
+                }),
+                headers: {
+                    "content-type": "application/json",
+                    "x-access-token": User.token,
+                },
+                method: "PUT",
+            });
 
-        router.push("/documents");
+            if (!response.ok) {
+                throw new Error(`HTTP error on updateDocument! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.log(error);
+        }
     },
 
     /**
