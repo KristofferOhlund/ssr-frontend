@@ -21,6 +21,7 @@ async function createDocument() {
   const doc = {
     title: `${title.value}`,
     content: `${content.value}`,
+    type: "text",
   };
 
   const result = await DocAction.createDocument(doc);
