@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import { socket } from "./socket/socket.js";
 import DocActions from "./composables/DocumentActions.js";
+import monacoEditor from "./monaco-editor.vue";
 
 // Get's ID from parent (documentList)
 const props = defineProps({
@@ -10,6 +11,9 @@ const props = defineProps({
 });
 
 const documentData = ref(null);
+
+// UPDATE CODE DOC
+const update = ref(true);
 
 // ------- SOCKET --------
 socket.on("update", (data) => {
@@ -30,6 +34,9 @@ onMounted(async () => {
   const result = await DocActions.getDocument(props.id);
   if (result) {
     documentData.value = result;
+    if (!documentData.value.type) {
+      documentData.value.type = "text";
+    }
     socket.emit("create", props.id);
   }
 });
@@ -43,9 +50,12 @@ function updateDocument() {
 }
 </script>
 
-<!-- TEMPLATE @change="emit(documentData.title)"  @change="emit()"-->
 <template>
-  <form v-if="documentData" @submit.prevent="updateDocument" id="update">
+  <form
+    v-if="documentData && documentData.type === 'text'"
+    @submit.prevent="updateDocument"
+    id="update"
+  >
     <label for="title">Title</label>
     <input
       type="text"
@@ -71,6 +81,10 @@ function updateDocument() {
     <p>Make updates and press submit:</p>
     <button form="update" value="submit">Submit</button>
   </form>
+  <monaco-editor
+    v-if="documentData && documentData.type === 'code'"
+    v-model:updateCode="documentData"
+  ></monaco-editor>
 </template>
 
 <style scoped>
