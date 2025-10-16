@@ -1,12 +1,25 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { CodeEditor } from "monaco-editor-vue3";
 import { User } from "./composables/UserComposable.js";
 import DocActions from "./composables/DocumentActions.js";
 import router from "../router/index.js";
 
+// Define model to be able to prepulate data from
+// an already existing code-document
+const currentCode = defineModel("currentCode");
+
+// Copy the value of property content since updateCode is an entire object
+// make a new ref out of the content property - this will be rendered and
+// executed in CodeEditor
+let updateCode;
+if (currentCode.value) {
+  updateCode = ref(currentCode.value.content);
+}
+
 // CodeEditor V-model
 const code = ref();
+
 // CodeEditor Config
 const editorOptions = {
   fontSize: 14,
@@ -19,7 +32,11 @@ const decodedOutput = ref("");
 
 // Execute Code
 async function execute() {
-  decodedOutput.value = await DocActions.executeCode(code);
+  if (updateCode) {
+    decodedOutput.value = await DocActions.executeCode(updateCode);
+  } else {
+    decodedOutput.value = await DocActions.executeCode(code);
+  }
 }
 
 // Save Code as a Document
@@ -45,7 +62,14 @@ async function saveCodeDocument() {
   <form class="code-form" @submit.prevent="execute">
     <div style="height: 400px">
       <CodeEditor
+        v-if="!updateCode"
         v-model:value="code"
+        language="javascript"
+        theme="vs-light"
+        :options="editorOptions"
+      /><CodeEditor
+        v-else
+        v-model:value="updateCode"
         language="javascript"
         theme="vs-dark"
         :options="editorOptions"
