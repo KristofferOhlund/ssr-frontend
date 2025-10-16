@@ -5,6 +5,11 @@ import { User } from "./composables/UserComposable.js";
 import DocActions from "./composables/DocumentActions.js";
 import router from "../router/index.js";
 
+// TODO
+// UPDATE IS ACTING WIERD - SOMETIMES UPDATES AND SOMETIMES DONT
+// WHEN DELET DOCUMENT - DISPLAYS KINGENS DOC? WHEN REFRESH SHOWS ALL AGAIN
+// WIERD ERRORS - FLAGS.JOB FULL & PROPERTY 'ON' ON NULL
+
 // ------------ SETUP ------------
 // Define model to be able to prepulate data from
 // an already existing code-document
@@ -56,6 +61,7 @@ async function saveCodeDocument() {
   };
 
   const result = await DocActions.createDocument(body);
+  console.log(result);
 
   if (result.acknowledged) {
     // redirect
@@ -65,18 +71,15 @@ async function saveCodeDocument() {
 
 // Update Code Document
 async function updateCodeDocument() {
-  console.log("Trying to update code in DB");
-  console.log("Must make sure .value is available");
-  // const body = {
-  //   title: `Code execution: ${date}`,
-  //   content: `${code.value}`,
-  //   type: "code",
-  // };
-  // const result = await DocActions.createDocument(body);
-  // if (result.acknowledged) {
-  //   // redirect
-  //   router.push({ name: "documents" });
-  // }
+  // Update title when current date and time
+  currentCode.value.title = date;
+  currentCode.value.content += updateCode.value;
+  const result = await DocActions.updateDocument(currentCode);
+
+  if (result) {
+    // redirect
+    router.push({ name: "documents" });
+  }
 }
 </script>
 
