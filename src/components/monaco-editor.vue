@@ -5,6 +5,7 @@ import { User } from "./composables/UserComposable.js";
 import DocActions from "./composables/DocumentActions.js";
 import router from "../router/index.js";
 
+// ------------ SETUP ------------
 // Define model to be able to prepulate data from
 // an already existing code-document
 const currentCode = defineModel("currentCode");
@@ -17,8 +18,11 @@ if (currentCode.value) {
   updateCode = ref(currentCode.value.content);
 }
 
-// CodeEditor V-model
+// If NEW Code Document
 const code = ref();
+
+// Saved output from Execution - This is shown in 'Terminal'
+const decodedOutput = ref("");
 
 // CodeEditor Config
 const editorOptions = {
@@ -27,8 +31,12 @@ const editorOptions = {
   automaticLayout: true,
 };
 
-// Saved output from Execution
-const decodedOutput = ref("");
+// ------------ PROPERTY ------------
+// used in save / update document
+const timestamp = Date.now();
+const date = new Date(timestamp).toString().split(" ").slice(0, 5).join(" ");
+
+// ------------ ACTIONS ------------
 
 // Execute Code
 async function execute() {
@@ -41,8 +49,6 @@ async function execute() {
 
 // Save Code as a Document
 async function saveCodeDocument() {
-  const timestampd = Date.now();
-  const date = new Date(timestampd).toString().split(" ").slice(0, 5).join(" ");
   const body = {
     title: `Code execution: ${date}`,
     content: `${code.value}`,
@@ -55,6 +61,22 @@ async function saveCodeDocument() {
     // redirect
     router.push({ name: "documents" });
   }
+}
+
+// Update Code Document
+async function updateCodeDocument() {
+  console.log("Trying to update code in DB");
+  console.log("Must make sure .value is available");
+  // const body = {
+  //   title: `Code execution: ${date}`,
+  //   content: `${code.value}`,
+  //   type: "code",
+  // };
+  // const result = await DocActions.createDocument(body);
+  // if (result.acknowledged) {
+  //   // redirect
+  //   router.push({ name: "documents" });
+  // }
 }
 </script>
 
@@ -80,7 +102,12 @@ async function saveCodeDocument() {
       <p>{{ `${decodedOutput}` }}</p>
       <span>{{ `zsh-${User.user}@BTH ~/dbwebb-kurser/jsramverk/ssr-frontend =>` }}</span>
       <span class="cursor"></span>
-      <button class="btn code-btn" type="submit" @click="saveCodeDocument">Save Code in DB</button>
+      <button v-if="!updateCode" class="btn code-btn" type="submit" @click="saveCodeDocument">
+        Save Code in DB
+      </button>
+      <button v-else class="btn code-btn" type="submit" @click="updateCodeDocument">
+        Update Code in DB
+      </button>
     </div>
   </form>
 </template>
