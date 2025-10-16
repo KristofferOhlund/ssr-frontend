@@ -2,34 +2,42 @@
 import { ref } from "vue";
 import { CodeEditor } from "monaco-editor-vue3";
 import { User } from "./composables/UserComposable.js";
+import DocActions from "./composables/DocumentActions.js";
+import router from "../router/index.js";
 
+// CodeEditor V-model
 const code = ref();
-
-const decodedOutput = ref("");
-
+// CodeEditor Config
 const editorOptions = {
   fontSize: 14,
   minimap: { enabled: false },
   automaticLayout: true,
 };
 
+// Saved output from Execution
+const decodedOutput = ref("");
+
+// Execute Code
 async function execute() {
-  var data = {
-    code: btoa(`${code.value}`),
+  decodedOutput.value = await DocActions.executeCode(code);
+}
+
+// Save Code as a Document
+async function saveCodeDocument() {
+  const timestampd = Date.now();
+  const date = new Date(timestampd).toString().split(" ").slice(0, 5).join(" ");
+  const body = {
+    title: `Code execution: ${date}`,
+    content: `${decodedOutput.value}`,
+    type: "code",
   };
 
-  const response = await fetch("https://execjs.emilfolino.se/code", {
-    body: JSON.stringify(data),
-    headers: {
-      "content-type": "application/json",
-    },
-    method: "POST",
-  });
+  const result = await DocActions.createDocument(body);
 
-  const result = await response.json();
-  // write in terminal
-  decodedOutput.value += atob(result.data);
-  console.log(decodedOutput.value);
+  if (result.acknowledged) {
+    // redirect
+    router.push({ name: "documents" });
+  }
 }
 </script>
 
@@ -46,8 +54,9 @@ async function execute() {
     <button type="submit" class="btn code-btn">Execute</button>
     <div v-if="decodedOutput !== ''" class="terminal">
       <p>{{ `${decodedOutput}` }}</p>
-      {{ `zsh-${User.user}@MBA ~/dbwebb-kurser/jsramverk/ssr-frontend =>` }}
+      <span>{{ `zsh-${User.user}@BTH ~/dbwebb-kurser/jsramverk/ssr-frontend =>` }}</span>
       <span class="cursor"></span>
+      <button class="btn code-btn" type="submit" @click="saveCodeDocument">Save Code in DB</button>
     </div>
   </form>
 </template>
@@ -63,7 +72,6 @@ async function execute() {
   border-radius: 5px;
   background-color: black;
   color: green;
-  height: 400px;
   padding: 0.5rem;
   font-family: "Monaco";
   font-size: 1rem;
@@ -82,7 +90,6 @@ async function execute() {
 .code-btn {
   padding: 14px 20px;
   margin: 8px 0;
-
   cursor: pointer;
   width: 100%;
   font-size: 1.2rem;
