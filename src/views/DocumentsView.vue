@@ -4,7 +4,6 @@ import { User } from "../components/composables/UserComposable.js";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import checkLogin from "../components/composables/checkLogin.js";
 import DocAction from "../components/composables/DocumentActions.js";
-import monaco from "../components/monaco-editor.vue";
 
 let updateInterval;
 
@@ -42,7 +41,6 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <monaco></monaco>
   <UserDocumentList v-if="User.isLoggedIn && allDocs.data" :allDocs="allDocs" :loading="loading" />
 </template>
 
