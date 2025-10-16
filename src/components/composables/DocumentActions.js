@@ -63,7 +63,9 @@ const DocActions = {
 
     /**
      * Create new Doc
-     * @param {Object} document - document title and content
+     * @param {Object} document - to save in DB
+     * All documents MUST have title, content, type
+     * author is optional, equals User.user
      */
     createDocument: async function createDocument(document) {
         try {
@@ -72,6 +74,8 @@ const DocActions = {
                     title: `${document.title}`,
                     content: `${document.content}`,
                     author: `${User.user}`,
+                    type: `${document.type}`,
+
                 }),
                 headers: {
                     "content-type": "application/json",
@@ -91,7 +95,6 @@ const DocActions = {
             console.log(error)
         }
     },
-
 
     /**
      * Delete document with ID
@@ -169,6 +172,32 @@ const DocActions = {
             console.log("Något gick fel.");
             console.log(error);
         }
+    },
+
+    /**
+     * Execute Code
+     */
+    executeCode: async function executeCode(code) {
+        // encode to base64 string
+        var data = {
+            code: btoa(`${code.value}`),
+        };
+
+        const response = await fetch("https://execjs.emilfolino.se/code", {
+            body: JSON.stringify(data),
+            headers: {
+                "content-type": "application/json",
+            },
+            method: "POST",
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error on executeCode! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        // Decode result
+        return atob(result.data);
     }
 }
 
