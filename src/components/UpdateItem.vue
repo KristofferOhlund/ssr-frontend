@@ -31,9 +31,9 @@ function emit() {
 // Call getDocument function
 // emit the create event - backend creates room based on id.
 onMounted(async () => {
-  const result = await DocActions.getDocument(props.id);
+  const result = await DocActions.fetchOneGraphQLDocument(props.id);
   if (result) {
-    documentData.value = result;
+    documentData.value = result.data.document;
     if (!documentData.value.type) {
       documentData.value.type = "text";
     }
