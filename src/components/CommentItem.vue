@@ -1,20 +1,29 @@
-
-
-<!--  Detta kan nog funka halvbra -->
-<!-- /graphql -> comments(document: docId ) {commentList { _id comment }} -->
-<!-- https://stackoverflow.com/questions/6328718/how-to-wrap-surround-highlighted-text-with-an-element -->
-
 <script setup>
 import { ref, onMounted } from "vue";
 
+//  Detta kan nog funka halvbra
+// /graphql -> comments(document: docId ) {commentList { _id comment }}
+// https://stackoverflow.com/questions/6328718/how-to-wrap-surround-highlighted-text-with-an-element
+
+
+const testPopover = document.createElement("div");
+testPopover.setAttribute('popover', "auto");
+testPopover.classList.add("comment", "popover")
+testPopover.id = "testPop";
+testPopover.innerHTML = `<h1>Hello!</h1><p>This is a test popover.</p>`
+document.body.appendChild(testPopover);
 
 function makeComment(){
     const selection = window.getSelection();
+    if(!selection) {
+      return;
+    }
 
     const range = selection.getRangeAt(0).cloneRange();
 
-    const span = document.createElement("button");
-    span.classList.add('yellow', "btn-comment");
+    const commentEl = document.createElement("button");
+    commentEl.classList.add('yellow', "btn-comment");
+    commentEl.setAttribute("popovertarget", "testPop");
   // ------------------------------------------------------------------------------------
     // We send to DB and it returns the commentId
     // Separate collection: _id, comment, docId ?
@@ -29,7 +38,7 @@ function makeComment(){
 
   // ------------------------------------------------------------------------------------
 
-    range.surroundContents(span);
+    range.surroundContents(commentEl);
     selection.removeAllRanges();
     selection.addRange(range)
   };
@@ -54,7 +63,16 @@ onMounted(() => {
 .btn-comment {
   border: none;
   cursor: help;
+}
 
+.popover {
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning ? */
+  position: absolute;
+  z-index: 999;
+  margin: auto auto;
+  background-color: #ffffffee;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
 }
 
 .textarea {
