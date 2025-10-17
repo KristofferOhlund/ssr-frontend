@@ -5,6 +5,8 @@ import { User } from "./composables/UserComposable.js";
 import DocActions from "./composables/DocumentActions.js";
 import router from "../router/index.js";
 
+import { socket } from "./socket/socket.js";
+
 // TODO
 // UPDATE IS ACTING WIERD - SOMETIMES UPDATES AND SOMETIMES DONT
 // WHEN DELET DOCUMENT - DISPLAYS KINGENS DOC? WHEN REFRESH SHOWS ALL AGAIN
@@ -40,6 +42,19 @@ const editorOptions = {
 // used in save / update document
 const timestamp = Date.now();
 const date = new Date(timestamp).toString().split(" ").slice(0, 5).join(" ");
+
+// ------- SOCKET --------
+socket.on("update", (data) => {
+  updateCode.value = data;
+});
+
+/**
+ * Emits the Update event
+ * @param value string Updated value
+ */
+function emit() {
+  socket.emit("update", updateCode.value);
+}
 
 // ------------ ACTIONS ------------
 
@@ -93,12 +108,14 @@ async function updateCodeDocument() {
         language="javascript"
         theme="vs-light"
         :options="editorOptions"
+        @change="emit()"
       /><CodeEditor
         v-else
         v-model:value="updateCode"
         language="javascript"
         theme="vs-dark"
         :options="editorOptions"
+        @change="emit()"
       />
     </div>
     <button type="submit" class="btn code-btn">Execute</button>
