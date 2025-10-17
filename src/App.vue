@@ -23,6 +23,7 @@ import { User } from "./components/composables/UserComposable.js";
         <div v-else>
           <RouterLink to="/login">Login</RouterLink>
           <RouterLink to="/register">Register</RouterLink>
+          <RouterLink to="/comment">Comment</RouterLink>
         </div>
       </nav>
     </div>

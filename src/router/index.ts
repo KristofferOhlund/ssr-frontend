@@ -7,6 +7,7 @@ import ConnectionState from "../components/socket/ConnectionState.vue";
 import UserForm from "../components/forms/UserForm.vue";
 import LogOut from "../components/forms/LogOut.vue";
 import ShareDocument from "../components/ShareDocument.vue";
+import CommentItem from "@/components/CommentItem.vue";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -68,6 +69,12 @@ const router = createRouter({
       path: "/register",
       name: "register",
       component: UserForm,
+      props: true,
+    },
+    {
+      path: "/comment",
+      name: "comment",
+      component: CommentItem,
       props: true,
     },
   ],
