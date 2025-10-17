@@ -209,6 +209,90 @@ const DocActions = {
         const result = await response.json();
         // Decode result
         return atob(result.data);
+    },
+
+    /**
+     * GraphQL endpot for fetching all user Documents
+     */
+    fetchGraphQLDocuments: async function fetchGraphQLDocuments() {
+        try {
+            const response = await fetch(`${API}/graphql`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-access-token": User.token,
+                },
+                body: JSON.stringify({
+                    query: `{
+                        userDocuments(username: "${User.user}") {
+                        authorDocs { 
+                            _id 
+                            author 
+                            collaborators 
+                            content 
+                            title 
+                            preview 
+                        } 
+                        collabDocs { 
+                            _id
+                            author
+                            collaborators 
+                            content 
+                            title 
+                            preview 
+                          }
+                        }
+                    } `})
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error on fetchDocuments! Status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            console.log(responseData);
+            return responseData;
+        } catch (error) {
+            console.error("fetchDocuments error:", error);
+            return [];
+        }
+    },
+
+    /**
+     * GraphQL endpot for fetching all user Documents
+     */
+    fetchOneGraphQLDocument: async function fetchOneGraphQLDocument(id) {
+        try {
+            const response = await fetch(`${API}/graphql`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-access-token": User.token,
+                },
+                body: JSON.stringify({
+                    query: `{
+                        document(id: "${id}") {
+                            _id
+                            title
+                            content
+                            author
+                            collaborators
+                            type
+                }
+                        } `})
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error on fetchDocuments! Status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            console.log(responseData);
+            return responseData;
+        } catch (error) {
+            console.error("fetchDocuments error:", error);
+            return [];
+        }
     }
 }
 
