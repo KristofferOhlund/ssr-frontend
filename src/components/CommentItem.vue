@@ -8,10 +8,28 @@ import { ref, onMounted } from "vue";
 // commentRef.value = docComments
 // https://stackoverflow.com/questions/6328718/how-to-wrap-surround-highlighted-text-with-an-element
 
+// ------------------------------------------------------------------------------------
+// We send to DB and it returns the commentId
+// Separate collection: _id, docId, comment, deleted ?
+
+// HÄR SÄTTS ID:
+// commentId = await addCommentToDatabase(documentID)
+// span.id = commentId;
+// popovertarget="`${commentId}`";
+
+// For all comments with documentID -> <div id="`${commentId}`" popover>`${comment}`</div>
+// update comments-ref
+// socket emit
+
+// ------------------------------------------------------------------------------------
+
 // Ref för att auto incrementera ID
 const refId = ref(0);
 
 function makeComment() {
+  let id = `id${refId.value}`;
+  // increment ID
+  refId.value++;
   const selection = window.getSelection();
   if (!selection) {
     return;
@@ -21,43 +39,29 @@ function makeComment() {
 
   const commentEl = document.createElement("button");
   commentEl.classList.add("yellow", "btn-comment");
-  commentEl.setAttribute("popovertarget", "testPop");
-
-  // ------------------------------------------------------------------------------------
-  // We send to DB and it returns the commentId
-  // Separate collection: _id, docId, comment, deleted ?
-
-  // HÄR SÄTTS ID:
-  // commentId = await addCommentToDatabase(documentID)
-  // span.id = commentId;
-  // popovertarget="`${commentId}`";
-
-  // For all comments with documentID -> <div id="`${commentId}`" popover>`${comment}`</div>
-  // update comments-ref
-  // socket emit
-
-  // ------------------------------------------------------------------------------------
+  commentEl.setAttribute("popovertarget", `${id}`);
 
   range.surroundContents(commentEl);
-  // selection.removeAllRanges();
-  // selection.addRange(range);
-  // Testing popover concept:
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  // Create Popover:
   const testPopover = document.createElement("div");
   testPopover.setAttribute("popover", "auto");
   testPopover.classList.add("popover");
-  testPopover.id = "popover";
+  testPopover.id = `${id}`;
+
   document.body.appendChild(testPopover);
 
-  addComment();
+  addComment(id);
 }
 
 // Adds a Comment div
 // Contains buttons and eventListeners
-function addComment() {
-  const testpop = document.querySelector("#popover");
-
+function addComment(id) {
+  // Build Comment Div
+  const testpop = document.querySelector(`#${id}`);
   const comment = document.createElement("div");
-  comment.setAttribute("id", refId.value);
   comment.classList.add("comment");
   const label = document.createElement("p");
   label.innerText = "Comment created by: User";
@@ -65,15 +69,16 @@ function addComment() {
   created.innerText = "Comment created: date";
   const textarea = document.createElement("textarea");
   textarea.setAttribute("required", "true");
+
+  // Add new comment
   const addComBtn = document.createElement("button");
   addComBtn.innerText = "Add Comment";
   addComBtn.addEventListener("click", () => {
-    // disable comment
     textarea.setAttribute("readonly", "true");
-    saveCommentInDB();
-    addComment();
+    addComment(id);
   });
 
+  // Resolve comment
   const delComBtn = document.createElement("button");
   delComBtn.innerText = "Resolve Comment";
   delComBtn.addEventListener("click", () => {
@@ -81,37 +86,25 @@ function addComment() {
     delComBtn.removeEventListener("click", resolveComment);
   });
 
-  // add to comment div
+  // Add content to comment container
   comment.appendChild(label);
   comment.appendChild(created);
   comment.appendChild(textarea);
   comment.appendChild(addComBtn);
   comment.appendChild(delComBtn);
 
-  // add to testpop
+  // Add comment container to the popover element
   testpop.appendChild(comment);
-
-  // increment ID
-  refId.value++;
-}
-
-// Save Comment in dB
-function saveCommentInDB() {
-  console.log("doc saved in DB");
 }
 
 // Resolve comment
 function resolveComment(comment) {
   const p = document.createElement("p");
   p.innerText = "Resolved at: <date>";
-
   comment.insertBefore(p, comment.childNodes[2]);
   console.log("doc saved in DB");
   comment.setAttribute("disabled", "true");
 }
-
-// Add delete-comment-button (Soft delete)
-// @click="deleteComment"
 </script>
 
 <template>
