@@ -45,13 +45,32 @@ function makeComment() {
   selection.removeAllRanges();
   selection.addRange(range);
 
-  // Create Popover:
-  const testPopover = document.createElement("div");
-  testPopover.setAttribute("popover", "auto");
-  testPopover.classList.add("popover");
-  testPopover.id = `${id}`;
+  // Create the actual popover element
+  createPopoverElement(id);
+}
 
-  document.body.appendChild(testPopover);
+function createPopoverElement(id) {
+  // Create Popover:
+  const popover = document.createElement("div");
+  popover.setAttribute("popover", "manual");
+  popover.classList.add("popover");
+  popover.id = `${id}`;
+
+  // Create Popover container
+  const popContent = document.createElement("div");
+  popContent.classList.add("popContent");
+
+  // Close button
+  const closeBtn = document.createElement("button");
+  closeBtn.innerText = "Close pop";
+  closeBtn.addEventListener("click", () => {
+    const pop = document.querySelector(`#${id}`);
+    pop.hidePopover();
+  });
+
+  popContent.appendChild(closeBtn);
+  popover.appendChild(popContent);
+  document.body.appendChild(popover);
 
   addComment(id);
 }
@@ -59,8 +78,12 @@ function makeComment() {
 // Adds a Comment div
 // Contains buttons and eventListeners
 function addComment(id) {
-  // Build Comment Div
-  const testpop = document.querySelector(`#${id}`);
+  // Find popover
+  const popover = document.querySelector(`#${id}`);
+  const popOverContainer = popover.firstChild;
+  console.log(popOverContainer);
+
+  // Build comment content
   const comment = document.createElement("div");
   comment.classList.add("comment");
   const label = document.createElement("p");
@@ -94,7 +117,7 @@ function addComment(id) {
   comment.appendChild(delComBtn);
 
   // Add comment container to the popover element
-  testpop.appendChild(comment);
+  popOverContainer.appendChild(comment);
 }
 
 // Resolve comment
@@ -134,11 +157,7 @@ function resolveComment(comment) {
   border-radius: 5px;
 }
 
-.popover {
-  /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning ? */
-  position: absolute;
-  z-index: 999;
-  margin: auto auto;
+.popContent {
   background-color: red;
   border: 2px solid var(--color-border);
   border-radius: 8px;
@@ -146,8 +165,15 @@ function resolveComment(comment) {
   flex-direction: column;
   gap: 1rem;
   border-radius: 2px;
-  overflow-y: scroll;
-  height: 400px;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.popover {
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning ? */
+  position: absolute;
+  z-index: 999;
+  margin: auto auto;
 }
 
 .textarea {
