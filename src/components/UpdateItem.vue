@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { socket } from "./socket/socket.js";
 import DocActions from "./composables/DocumentActions.js";
 import monacoEditor from "./monaco-editor.vue";
+import editableContent from "./editableContent.vue";
+import EditableContent from "./editableContent.vue";
+import checkLogin from "./composables/checkLogin.js";
+
+checkLogin();
 
 // Get's ID from parent (documentList)
 const props = defineProps({
@@ -10,10 +15,8 @@ const props = defineProps({
   id: String,
 });
 
+// Documents fetched from Database
 const documentData = ref(null);
-
-// UPDATE CODE DOC
-const update = ref(true);
 
 // ------- SOCKET --------
 socket.on("update", (data) => {
@@ -51,7 +54,21 @@ function updateDocument() {
 </script>
 
 <template>
-  <form
+  <!--v-model funkar endast på input elements, därför funkar inte socket med emit-->
+  <div v-if="documentData && documentData.type === 'text'">
+    <h3 for="title">Dokument titel</h3>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      v-model="documentData.title"
+      @change="emit()"
+      required
+    />
+    <EditableContent v-model="documentData" @input="emit()"></EditableContent>
+    <button @click="updateDocument">Uppdatera dokument</button>
+  </div>
+  <!--<form
     v-if="documentData && documentData.type === 'text'"
     @submit.prevent="updateDocument"
     id="update"
@@ -80,7 +97,7 @@ function updateDocument() {
     ></textarea>
     <p>Make updates and press submit:</p>
     <button form="update" value="submit">Submit</button>
-  </form>
+  </form>-->
   <monaco-editor
     v-if="documentData && documentData.type === 'code'"
     v-model:currentCode="documentData"
