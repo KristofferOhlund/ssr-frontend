@@ -6,6 +6,7 @@ import monacoEditor from "./monaco-editor.vue";
 import EditableContent from "./editableContent.vue";
 import checkLogin from "./composables/checkLogin.js";
 import comments from "./composables/comments.js";
+import router from "../router/index.ts";
 
 checkLogin();
 
@@ -31,6 +32,7 @@ socket.on("update", (data) => {
  * @param value string Updated value
  */
 function emit() {
+  console.log("event triggered");
   socket.emit("update", documentData.value);
 }
 
@@ -51,13 +53,16 @@ onMounted(async () => {
  * Update document in database
  * Use DocActions insted of Component
  */
-function updateDocument() {
+async function updateDocument() {
   const objData = {};
   Object.assign(objData, documentData.value);
   objData["id"] = objData["_id"];
   delete objData["_id"];
 
-  DocActions.updateDocument(objData);
+  const result = await DocActions.updateDocument(objData);
+  if (result) {
+    router.push({ name: "documents" });
+  }
 }
 
 /**
@@ -65,6 +70,12 @@ function updateDocument() {
  */
 function dataComments() {
   comments.makeComment(commentId.value);
+  // Manually throw input event after comment
+  // this will update documentData.value even if no manual
+  // input is made
+  var event = new Event("input");
+  const editor = document.getElementById(`editor`);
+  editor?.dispatchEvent(event);
   commentId.value++;
   // Set value to false => hide comment btn
   selectionChanged.value = false;
