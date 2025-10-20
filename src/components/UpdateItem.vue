@@ -55,9 +55,23 @@ function updateDocument() {
   DocActions.updateDocument(documentData);
 }
 
+/**
+ * Add comments to DOM
+ */
 function dataComments() {
   comments.makeComment(commentId.value);
   commentId.value++;
+  // Set value to false => hide comment btn
+  selectionChanged.value = false;
+}
+
+let selectionChanged = ref(false);
+
+/**
+ * Update selectionChanged value
+ */
+function selectionstart() {
+  selectionChanged.value = true;
 }
 </script>
 
@@ -73,9 +87,13 @@ function dataComments() {
       @change="emit()"
       required
     />
-    <EditableContent v-model="documentData" @input="emit()"></EditableContent>
+    <EditableContent
+      v-model="documentData"
+      @input="emit()"
+      @selectstart="selectionstart()"
+    ></EditableContent>
     <button @click="updateDocument">Uppdatera dokument</button>
-    <button @click="dataComments">Add comment</button>
+    <button v-if="selectionChanged" @click="dataComments">Add comment</button>
   </div>
   <!--<form
     v-if="documentData && documentData.type === 'text'"
