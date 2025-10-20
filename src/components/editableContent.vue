@@ -11,14 +11,14 @@ watch(
     editor.innerHTML = userObject.value.content;
     // https://www.reddit.com/r/learnjavascript/comments/p0ted5/how_to_set_text_cursor_position_in_a/
 
-    // const textNode = editor.lastChild;
-    const textNode = editor.childNodes[editor.childNodes.length - 1];
-    //console.log(textNode);
+    // Find last element in editablecontent div
+    let textNode = editor.childNodes[editor.childNodes.length - 1];
+    if (textNode.nodeName !== "#text") {
+      textNode = textNode.firstChild;
+    }
 
     if (textNode && textNode.nodeType === Node.TEXT_NODE) {
       const pos = textNode.data.length;
-      console.log(pos);
-      //   const pos = userObject.value.content.length;
       const range = document.createRange();
       range.setStart(textNode, pos);
       range.setEnd(textNode, pos);
@@ -44,10 +44,7 @@ onMounted(() => {
   //   console.log(editor);
 
   editor.addEventListener("input", (event) => {
-    // Om backspace - ta bort
-    console.log("event triggered");
     userObject.value.content = editor.innerHTML; // + "\u200B";
-    console.log(editor);
     // if (event.inputType !== "deleteContentBackward") {
     //   userObject.value.content += event.data;
     // } else {
