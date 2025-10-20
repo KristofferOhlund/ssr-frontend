@@ -128,13 +128,7 @@ const DocActions = {
     updateDocument: async function updateDocument(documentData) {
         try {
             const response = await fetch(`${API}/document`, {
-                body: JSON.stringify({
-                    id: `${documentData.value._id}`,
-                    title: `${documentData.value.title}`,
-                    content: `${documentData.value.content}`,
-                    author: `${documentData.value.author}`,
-                    type: `${documentData.value.type}`,
-                }),
+                body: JSON.stringify(documentData),
                 headers: {
                     "content-type": "application/json",
                     "x-access-token": User.token,

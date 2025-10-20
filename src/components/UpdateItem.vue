@@ -52,7 +52,12 @@ onMounted(async () => {
  * Use DocActions insted of Component
  */
 function updateDocument() {
-  DocActions.updateDocument(documentData);
+  const objData = {};
+  Object.assign(objData, documentData.value);
+  objData["id"] = objData["_id"];
+  delete objData["_id"];
+
+  DocActions.updateDocument(objData);
 }
 
 /**
