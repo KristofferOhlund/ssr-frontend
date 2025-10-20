@@ -47,6 +47,18 @@ onMounted(async () => {
     }
     socket.emit("create", props.id);
   }
+  // Testing to render out the comments...
+  console.log("Comments: ", documentData.value.comments);
+  for(const comment of documentData.value.comments) {
+    const popover = document.createElement('div');
+
+    popover.setAttribute("popover", "manual");
+    popover.classList.add("popover");
+    popover.id = `pop${comment.id}`;
+
+    popover.innerHTML = comment.content;
+    document.body.appendChild(popover);
+  }
 });
 
 /**
@@ -73,7 +85,7 @@ function dataComments() {
   // Manually throw input event after comment
   // this will update documentData.value even if no manual
   // input is made
-  var event = new Event("input");
+  const event = new Event("input");
   const editor = document.getElementById(`editor`);
   editor?.dispatchEvent(event);
 
@@ -98,7 +110,7 @@ function dataComments() {
   selectionChanged.value = false;
 }
 
-let selectionChanged = ref(false);
+const selectionChanged = ref(false);
 
 /**
  * Update selectionChanged value
