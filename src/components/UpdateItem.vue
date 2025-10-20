@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { socket } from "./socket/socket.js";
 import DocActions from "./composables/DocumentActions.js";
 import monacoEditor from "./monaco-editor.vue";
@@ -23,7 +23,6 @@ const documentData = ref(null);
 
 // ------- SOCKET --------
 socket.on("update", (data) => {
-  console.log("server reaction");
   documentData.value = data;
 });
 
@@ -32,8 +31,7 @@ socket.on("update", (data) => {
  * @param value string Updated value
  */
 function emit() {
-  console.log(documentData.value);
-  // socket.emit("update", documentData.value);
+  socket.emit("update", documentData.value);
 }
 
 // Call getDocument function
