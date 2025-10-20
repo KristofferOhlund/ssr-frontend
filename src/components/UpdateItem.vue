@@ -3,9 +3,9 @@ import { onMounted, ref, watch } from "vue";
 import { socket } from "./socket/socket.js";
 import DocActions from "./composables/DocumentActions.js";
 import monacoEditor from "./monaco-editor.vue";
-import editableContent from "./editableContent.vue";
 import EditableContent from "./editableContent.vue";
 import checkLogin from "./composables/checkLogin.js";
+import comments from "./composables/comments.js";
 
 checkLogin();
 
@@ -15,11 +15,15 @@ const props = defineProps({
   id: String,
 });
 
+// CommentID
+const commentId = ref(0);
+
 // Documents fetched from Database
 const documentData = ref(null);
 
 // ------- SOCKET --------
 socket.on("update", (data) => {
+  console.log("server reaction");
   documentData.value = data;
 });
 
@@ -28,7 +32,8 @@ socket.on("update", (data) => {
  * @param value string Updated value
  */
 function emit() {
-  socket.emit("update", documentData.value);
+  console.log(documentData.value);
+  // socket.emit("update", documentData.value);
 }
 
 // Call getDocument function
@@ -51,6 +56,11 @@ onMounted(async () => {
 function updateDocument() {
   DocActions.updateDocument(documentData);
 }
+
+function dataComments() {
+  comments.makeComment(commentId.value);
+  commentId.value++;
+}
 </script>
 
 <template>
@@ -67,6 +77,7 @@ function updateDocument() {
     />
     <EditableContent v-model="documentData" @input="emit()"></EditableContent>
     <button @click="updateDocument">Uppdatera dokument</button>
+    <button @click="dataComments">Add comment</button>
   </div>
   <!--<form
     v-if="documentData && documentData.type === 'text'"
