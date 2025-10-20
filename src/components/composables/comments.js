@@ -1,3 +1,9 @@
+import { User } from "./userComposable.js";
+
+const strptime = Date.now();
+const date = new Date(strptime).toString()
+const splitDate = date.split(" ").slice(0, -5).join(" ")
+
 const comments = {
     makeComment: function makeComment(id) {
         const selection = window.getSelection();
@@ -56,9 +62,9 @@ const comments = {
         const comment = document.createElement("div");
         comment.classList.add("comment");
         const label = document.createElement("p");
-        label.innerText = "Comment created by: User";
+        label.innerText = `Comment created by: ${User.user}`;
         const created = document.createElement("p");
-        created.innerText = "Comment created: date";
+        created.innerText = `Comment created: ${splitDate}`;
         const textarea = document.createElement("textarea");
         textarea.setAttribute("required", "true");
 
@@ -68,14 +74,17 @@ const comments = {
         addComBtn.addEventListener("click", () => {
             textarea.setAttribute("readonly", "true");
             addComment(id);
+            addComBtn.setAttribute("disabled", "true");
         });
 
         // Resolve comment
-        const delComBtn = document.createElement("button");
-        delComBtn.innerText = "Resolve Comment";
-        delComBtn.addEventListener("click", () => {
-            resolveComment(comment);
-            delComBtn.removeEventListener("click", resolveComment);
+        const resolveComBtn = document.createElement("button");
+        resolveComBtn.innerText = "Resolve Comment";
+        resolveComBtn.addEventListener("click", () => {
+            const p = document.createElement("p");
+            p.innerText = `Resolved at: ${splitDate}`;
+            comment.insertBefore(p, comment.childNodes[2]);
+            resolveComBtn.setAttribute("disabled", "true");
         });
 
         // Add content to comment container
@@ -83,7 +92,7 @@ const comments = {
         comment.appendChild(created);
         comment.appendChild(textarea);
         comment.appendChild(addComBtn);
-        comment.appendChild(delComBtn);
+        comment.appendChild(resolveComBtn);
 
         // Add comment container to the popover element
         popOverContainer.appendChild(comment);
