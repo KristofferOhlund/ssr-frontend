@@ -76,6 +76,23 @@ function dataComments() {
   var event = new Event("input");
   const editor = document.getElementById(`editor`);
   editor?.dispatchEvent(event);
+
+  // Find current popover
+  const popover = document.getElementById(`pop${commentId.value}`);
+
+  if (!documentData.value.comments) {
+    documentData.value.comments = [];
+  }
+  documentData.value.comments.push({
+    id: commentId.value,
+    content: popover?.innerHTML,
+  });
+
+  const div = document.createElement("div");
+  div.setAttribute("id", `${commentId.value++}`);
+  div.innerHTML = documentData.value.comments[commentId.value].content;
+
+  document.body.appendChild(div);
   commentId.value++;
   // Set value to false => hide comment btn
   selectionChanged.value = false;
