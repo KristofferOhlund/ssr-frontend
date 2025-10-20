@@ -58,6 +58,9 @@ onMounted(async () => {
 
     popover.innerHTML = comment.content;
     document.body.appendChild(popover);
+
+    // To give new added comments the right index
+    commentId.value++
   }
 });
 
@@ -73,6 +76,7 @@ async function updateDocument() {
 
   const result = await DocActions.updateDocument(objData);
   if (result) {
+    console.log("Redirecting...");
     router.push({ name: "documents" });
   }
 }
