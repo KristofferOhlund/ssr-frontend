@@ -64,7 +64,7 @@ async function deleteDocument(id) {
         <hr />
       </div>
     </div>
-    <div v-if="allDocs.data.colabDocs" v-for="doc in allDocs.data.colabDocs">
+    <div v-if="allDocs.data.collabDocs" v-for="doc in allDocs.data.collabDocs">
       <h2>Dokument som delas med dig:</h2>
       <div class="doc-container">
         <DocItem :doc="doc" :isShared="true"> </DocItem>
@@ -130,5 +130,6 @@ hr {
 .doc-container {
   display: flex;
   align-items: center;
+  padding: 1rem 0;
 }
 </style>

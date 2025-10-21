@@ -39,10 +39,14 @@ const props = defineProps<{
     <p class="id" id="id">{{ props.doc._id }}</p>-->
     <div v-if="!props.isShared">
       <div v-if="props.doc.collaborators">
-        <h3>Dokument delas med:</h3>
-        <ul>
-          <li v-for="collab in props.doc.collaborators">{{ collab }}</li>
-        </ul>
+      <details>
+        <summary>
+          <h4>Dokument delas med:</h4>
+        </summary>
+          <ul>
+            <li v-for="collab in props.doc.collaborators">{{ collab }}</li>
+          </ul>
+        </details>
       </div>
     </div>
     <div v-if="props.isShared">
@@ -139,5 +143,14 @@ p {
 
 .doctype {
   display: inline-block;
+}
+
+details {
+  margin-top: 0.5rem;
+  display: inline;
+  h4 {
+    display: inline;
+    margin-left: 0.25rem;
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { socket } from "./socket/socket.js";
 import DocActions from "./composables/DocumentActions.js";
 import monacoEditor from "./monaco-editor.vue";
@@ -57,8 +57,12 @@ onMounted(async () => {
     }
     socket.emit("create", props.id);
   }
-
   renderPopoverDynamically();
+});
+
+onUnmounted(() => {
+    const popoverContainer = document.getElementById("popoverContainer");
+    popoverContainer.innerHTML = "";
 });
 
 function renderPopoverDynamically() {
@@ -109,9 +113,6 @@ async function updateDocument() {
   const result = await DocActions.updateDocument(objData);
   if (result) {
     router.push({ name: "documents" });
-
-    const popoverContainer = document.getElementById("popoverContainer");
-    popoverContainer?.remove();
   }
 }
 
