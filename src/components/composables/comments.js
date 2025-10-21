@@ -6,7 +6,6 @@ const splitDate = date.split(" ").slice(0, -5).join(" ");
 
 const comments = {
     makeComment: function makeComment(documentData, id) {
-        console.log("Creating comment...");
         const selection = window.getSelection();
         if (!selection) {
             return;
@@ -24,14 +23,13 @@ const comments = {
 
         // Create the actual popover element
         this.createPopoverElement(documentData, id);
-        console.log("1");
     },
 
     createPopoverElement: function createPopoverElement(documentData, id) {
-        console.log("Creating popover...");
         // Create Popover:
         const popover = document.createElement("div");
         popover.setAttribute("popover", "manual");
+        // popover.setAttribute("draggable", "true");
         popover.classList.add("popover");
         popover.id = `pop${id}`;
 
@@ -43,12 +41,12 @@ const comments = {
         const closeBtn = document.createElement("button");
         closeBtn.innerText = "Close pop";
         closeBtn.classList.add("close-btn");
+        closeBtn.classList.add("btn");
         closeBtn.id = `close-btn-${id}`;
 
         closeBtn.addEventListener("click", () => {
             const pop = document.querySelector(`#pop${id}`);
             pop.hidePopover();
-            console.log("2");
             documentData.value.comments.push({
                 id: id,
                 content: popover?.innerHTML,
@@ -60,16 +58,15 @@ const comments = {
             const editor = document.getElementById(`editor`);
             editor?.dispatchEvent(event);
         });
-        console.log("3");
         popContent.appendChild(closeBtn);
         popover.appendChild(popContent);
         let popoverContainer = document.getElementById("popoverContainer");
         if (!popoverContainer) {
             popoverContainer = document.createElement("div");
             popoverContainer.id = "popoverContainer";
+            document.body.appendChild(popoverContainer);
         }
         popoverContainer.appendChild(popover);
-        document.body.appendChild(popoverContainer);
 
         this.addComment(id);
     },
@@ -79,7 +76,7 @@ const comments = {
     addComment: function addComment(id) {
         // Find popover
         const popover = document.querySelector(`#pop${id}`);
-        const popOverContainer = popover.firstChild;
+        const popoverWrapper = popover.firstChild;
 
         // Build comment content
         const comment = document.createElement("div");
@@ -91,22 +88,27 @@ const comments = {
         const commentOutput = document.createElement("div");
         commentOutput.setAttribute("id", `commentOutput-${id}`);
         const textarea = document.createElement("textarea");
+        textarea.classList.add("comment-textarea");
         textarea.setAttribute("required", "true");
 
         // Add new comment
         const btnContainer = document.createElement("div");
+        btnContainer.classList.add("btn-container");
         const addComBtn = document.createElement("button");
-        addComBtn.classList.add(["btn", "add-btn"])
+        addComBtn.classList.add("btn");
+        addComBtn.classList.add("add-btn");
         addComBtn.innerText = "Add Comment";
         addComBtn.addEventListener("click", () => {
             const p = document.createElement("p");
             p.innerText = textarea.value;
+            textarea.value = "";
             commentOutput.appendChild(p);
         });
 
         // Resolve comment
         const resolveComBtn = document.createElement("button");
-        addComBtn.classList.add(["btn", "resolve-btn"])
+        resolveComBtn.classList.add("btn");
+        resolveComBtn.classList.add("resolve-btn");
         resolveComBtn.innerText = "Resolve Comment";
         resolveComBtn.addEventListener("click", () => {
             const p = document.createElement("p");
@@ -114,6 +116,7 @@ const comments = {
             comment.insertBefore(p, comment.childNodes[3]);
             resolveComBtn.setAttribute("disabled", "true");
             addComBtn.setAttribute("disabled", "true");
+            textarea.setAttribute("disabled", "true");
         });
 
         // Add btn to btnContainer
@@ -128,7 +131,7 @@ const comments = {
         comment.appendChild(btnContainer);
 
         // Add comment container to the popover element
-        popOverContainer.appendChild(comment);
+        popoverWrapper.appendChild(comment);
     },
 };
 

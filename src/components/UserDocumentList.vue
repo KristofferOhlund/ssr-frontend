@@ -103,6 +103,21 @@ hr {
   color: var(--color-background);
 }
 
+.add-btn,
+.resolve-btn,
+.close-btn {
+  background-color: rgb(0, 189, 126);
+  color: #fff;
+  border: 2px solid var(--color-border);
+}
+
+.add-btn:hover,
+.resolve-btn:hover,
+.close-btn:hover {
+  background-color: rgb(0, 126, 189);
+  color: var(--color-background);
+}
+
 .btn-delete:hover {
   background-color: rgb(228, 44, 44);
 }

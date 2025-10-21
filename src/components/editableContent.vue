@@ -44,12 +44,7 @@ onMounted(() => {
   //   console.log(editor);
 
   editor.addEventListener("input", (event) => {
-    userObject.value.content = editor.innerHTML; // + "\u200B";
-    // if (event.inputType !== "deleteContentBackward") {
-    //   userObject.value.content += event.data;
-    // } else {
-    //   userObject.value.content = userObject.value.content.slice(0, -1);
-    // }
+    userObject.value.content = editor.innerHTML;
   });
 });
 </script>
@@ -67,5 +62,6 @@ onMounted(() => {
   border: 2px solid grey;
   color: black;
   height: 400px;
+  margin-bottom: 1rem;
 }
 </style>

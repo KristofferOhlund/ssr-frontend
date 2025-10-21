@@ -12,7 +12,6 @@ checkLogin();
 
 // Get's ID from parent (documentList)
 const props = defineProps({
-  // data: Object,
   id: String,
 });
 
@@ -28,6 +27,7 @@ const documentData = ref(null);
 // ------- SOCKET --------
 socket.on("update", (data) => {
   documentData.value = data;
+  renderPopoverDynamically();
 });
 
 /**
@@ -35,7 +35,6 @@ socket.on("update", (data) => {
  * @param value string Updated value
  */
 function emit() {
-  console.log("event triggered");
   socket.emit("update", documentData.value);
 }
 function triggerInputEvent() {
@@ -58,45 +57,44 @@ onMounted(async () => {
     }
     socket.emit("create", props.id);
   }
-  // Testing to render out the comments...
-  console.log("Comments: ", documentData.value.comments);
 
+  renderPopoverDynamically();
+});
+
+function renderPopoverDynamically() {
   if (documentData.value.comments) {
-    const popoverContainer = document.createElement("div");
-    popoverContainer.id = "popoverContainer";
+    let popoverContainer = document.getElementById("popoverContainer");
+    if (!popoverContainer) {
+      popoverContainer = document.createElement("div");
+      popoverContainer.id = "popoverContainer";
+      document.body.appendChild(popoverContainer);
+    }
 
     for (const comment of documentData.value.comments) {
       const popover = document.createElement("div");
-
       popover.setAttribute("popover", "manual");
       popover.classList.add("popover");
       popover.id = `pop${comment.id}`;
-
       popover.innerHTML = comment.content;
+
       popoverContainer.appendChild(popover);
 
       // To give new added comments the right index
       commentId.value++;
     }
-    document.body.appendChild(popoverContainer);
+    // document.body.appendChild(popoverContainer);
     const closeBtns = document.querySelectorAll(".close-btn");
-    console.log("Close btns", closeBtns);
     for (const btn of closeBtns) {
-      console.log("btn", btn);
       btn.addEventListener("click", () => {
-        console.log("trying to fire event");
         const id = btn.id.slice(-1);
-        console.log(id);
         insertUpdatedComment(id);
         const pop = document.querySelector(`#pop${id}`);
-        console.log("ID", id);
         pop.hidePopover();
         triggerInputEvent();
-        console.log(documentData.value);
       });
     }
   }
-});
+}
 
 /**
  * Update document in database
@@ -107,19 +105,17 @@ async function updateDocument() {
   objData["id"] = objData["_id"];
   delete objData["_id"];
 
-  console.log(objData);
-  // const result = await DocActions.updateDocument(objData);
-  // if (result) {
-  //   console.log("Redirecting...");
-  //   router.push({ name: "documents" });
+  // Update inte database
+  const result = await DocActions.updateDocument(objData);
+  if (result) {
+    router.push({ name: "documents" });
 
-  //   const popoverContainer = document.getElementById("popoverContainer");
-  //   popoverContainer?.remove();
-  // }
+    const popoverContainer = document.getElementById("popoverContainer");
+    popoverContainer?.remove();
+  }
 }
 
 function insertUpdatedComment(id) {
-  console.log("InsertUpdatedCOmment trigger");
   // Find current popover
   const popover = document.getElementById(`pop${id}`);
 
@@ -135,15 +131,13 @@ function insertUpdatedComment(id) {
   } else {
     documentData.value.comments.push(newComment);
   }
+  emit();
 }
 /**
  * Add comments to DOM
  */
 function dataComments() {
   comments.makeComment(documentData, commentId.value);
-
-  // Find current popover
-  const popover = document.getElementById(`pop${commentId.value}`);
 
   // If comments property is not found, create it as an array
   if (!documentData.value.comments) {
@@ -181,50 +175,77 @@ function selectionstart() {
       @input="emit()"
       @selectstart="selectionstart()"
     ></EditableContent>
-    <button @click="updateDocument">Uppdatera dokument</button>
-    <button v-if="selectionChanged" @click="dataComments">Add comment</button>
+    <button @click="updateDocument" class="btn update-doc">Uppdatera dokument</button>
+    <button v-if="selectionChanged" @click="dataComments" class="btn add-comment">
+      Add comment
+    </button>
   </div>
-  <!--<form
-    v-if="documentData && documentData.type === 'text'"
-    @submit.prevent="updateDocument"
-    id="update"
-  >
-    <label for="title">Title</label>
-    <input
-      type="text"
-      id="title"
-      name="title"
-      v-model="documentData.title"
-      @change="emit()"
-      required
-    />
-
-    <label for="content">Content</label>
-    <textarea
-      type="text"
-      id="content"
-      name="content"
-      rows="20"
-      cols="50"
-      resize="none"
-      v-model="documentData.content"
-      @change="emit()"
-      required
-    ></textarea>
-    <p>Make updates and press submit:</p>
-    <button form="update" value="submit">Submit</button>
-  </form>-->
   <monaco-editor
     v-if="documentData && documentData.type === 'code'"
     v-model:currentCode="documentData"
   ></monaco-editor>
 </template>
 
-<style scoped>
-form {
+<style>
+/* form {
   margin-top: 2rem;
   display: flex;
   flex-direction: column;
   position: relative;
+} */
+
+.btn-container {
+  display: flex;
+  justify-content: space-evenly;
+  /* align-content: center; */
+  margin: 0.5rem;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.btn-comment {
+  border: none;
+  cursor: help;
+}
+
+.disabled {
+  background-color: grey;
+}
+
+.comment {
+  border: 2px solid var(--color-border);
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.popContent {
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  max-height: 400px;
+  padding: 0.5rem;
+}
+
+.popover {
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning ? */
+  position: absolute;
+  z-index: 999;
+  margin: auto;
+  border-radius: 5px;
+}
+
+/* [draggable="true"] {
+  cursor: move;
+} */
+
+.comment-textarea {
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  border: 2px solid var(--color-border);
 }
 </style>
