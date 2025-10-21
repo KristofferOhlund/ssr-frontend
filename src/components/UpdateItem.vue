@@ -35,6 +35,15 @@ function emit() {
   console.log("event triggered");
   socket.emit("update", documentData.value);
 }
+function triggerInputEvent () {
+    // Manually throw input event after comment
+    // this will update documentData.value even if no manual
+    // input is made
+    const event = new Event("input", { bubbles: true });
+    const editor = document.getElementById(`editor`);
+    editor?.dispatchEvent(event);
+    console.log("event triggered", event);
+}
 
 // Call getDocument function
 // emit the create event - backend creates room based on id.
@@ -49,19 +58,43 @@ onMounted(async () => {
   }
   // Testing to render out the comments...
   console.log("Comments: ", documentData.value.comments);
-  for(const comment of documentData.value.comments) {
-    const popover = document.createElement('div');
 
-    popover.setAttribute("popover", "manual");
-    popover.classList.add("popover");
-    popover.id = `pop${comment.id}`;
+  if(documentData.value.comments){
+    const popoverContainer = document.createElement('div');
+    popoverContainer.id = "popoverContainer";
 
-    popover.innerHTML = comment.content;
-    document.body.appendChild(popover);
+    for(const comment of documentData.value.comments) {
+      const popover = document.createElement('div');
 
-    // To give new added comments the right index
-    commentId.value++
+      popover.setAttribute("popover", "manual");
+      popover.classList.add("popover");
+      popover.id = `pop${comment.id}`;
+
+      popover.innerHTML = comment.content;
+      popoverContainer.appendChild(popover)
+
+      // To give new added comments the right index
+      commentId.value++;
+    }
+    document.body.appendChild(popoverContainer);
+    const closeBtns = document.querySelectorAll(".close-btn");
+    console.log("Close btns", closeBtns);
+    for (const btn of closeBtns) {
+      console.log("btn", btn);
+      btn.addEventListener("click", () => {
+        console.log("trying to fire event");
+        const id = btn.id.slice(-1);
+        console.log(id);
+        insertUpdatedComment(id);
+        const pop = document.querySelector(`#pop${id}`);
+        console.log("ID", id);
+        pop.hidePopover();
+        triggerInputEvent();
+        console.log(documentData.value);
+      });
+    }
   }
+
 });
 
 /**
@@ -78,7 +111,23 @@ async function updateDocument() {
   if (result) {
     console.log("Redirecting...");
     router.push({ name: "documents" });
+
+    const popoverContainer = document.getElementById("popoverContainer");
+    popoverContainer?.remove()
   }
+}
+
+function insertUpdatedComment(id){
+    // Find current popover
+  const popover = document.getElementById(`pop${id}`);
+
+  if (!documentData.value.comments) {
+    documentData.value.comments = [];
+  }
+  const newComment = {id: id, content: popover?.innerHTML};
+
+  const foundIndex = documentData.value.comments.findIndex(element => element.id === newComment.id);
+  documentData.value.comments.splice(foundIndex, 1, newComment);
 }
 
 /**
@@ -86,12 +135,6 @@ async function updateDocument() {
  */
 function dataComments() {
   comments.makeComment(commentId.value);
-  // Manually throw input event after comment
-  // this will update documentData.value even if no manual
-  // input is made
-  const event = new Event("input");
-  const editor = document.getElementById(`editor`);
-  editor?.dispatchEvent(event);
 
   // Find current popover
   const popover = document.getElementById(`pop${commentId.value}`);
@@ -104,11 +147,11 @@ function dataComments() {
     content: popover?.innerHTML,
   });
 
-  const div = document.createElement("div");
-  div.setAttribute("id", `${commentId.value++}`);
-  div.innerHTML = documentData.value.comments[commentId.value].content;
-
-  document.body.appendChild(div);
+  // const div = document.createElement("div");
+  // div.setAttribute("id", `${commentId.value++}`);
+  // div.innerHTML = documentData.value.comments[commentId.value].content;
+  triggerInputEvent();
+  // document.body.appendChild(div);
   commentId.value++;
   // Set value to false => hide comment btn
   selectionChanged.value = false;
@@ -122,6 +165,7 @@ const selectionChanged = ref(false);
 function selectionstart() {
   selectionChanged.value = true;
 }
+
 </script>
 
 <template>
@@ -188,3 +232,4 @@ form {
   position: relative;
 }
 </style>
+

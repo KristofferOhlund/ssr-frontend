@@ -6,6 +6,7 @@ const splitDate = date.split(" ").slice(0, -5).join(" ");
 
 const comments = {
   makeComment: function makeComment(id) {
+    console.log("Creating comment...");
     const selection = window.getSelection();
     if (!selection) {
       return;
@@ -23,6 +24,7 @@ const comments = {
 
     // Create the actual popover element
     this.createPopoverElement(id);
+    console.log("1");
   },
 
   createPopoverElement: function createPopoverElement(id) {
@@ -40,19 +42,38 @@ const comments = {
     // Close button
     const closeBtn = document.createElement("button");
     closeBtn.innerText = "Close pop";
+    closeBtn.classList.add("close-btn");
+    closeBtn.id = `close-btn-${id}`;
     // Instead of using event listener:
-    closeBtn.setAttribute("popovertarget", `pop${id}`);
-    closeBtn.setAttribute("popovertargetaction", "hide");
+    // closeBtn.setAttribute("popovertarget", `pop${id}`);
+    // closeBtn.setAttribute("popovertargetaction", "hide");
     // Using attributes keeps them klickable when created by inserting innerHTML
 
-    // closeBtn.addEventListener("click", () => {
-    //   const pop = document.querySelector(`#pop${id}`);
-    //   pop.hidePopover();
-    // });
-
+    closeBtn.addEventListener("click", () => {
+      const pop = document.querySelector(`#pop${id}`);
+      pop.hidePopover();
+      console.log("2");
+      documentData.value.comments.push({
+        id: id,
+        content: popover?.innerHTML,
+      });
+      // Manually throw input event after comment
+      // this will update documentData.value even if no manual
+      // input is made
+      const event = new Event("input", { bubbles: true });
+      const editor = document.getElementById(`editor`);
+      editor?.dispatchEvent(event);
+    });
+    console.log("3");
     popContent.appendChild(closeBtn);
     popover.appendChild(popContent);
-    document.body.appendChild(popover);
+    let popoverContainer = document.getElementById("popoverContainer");
+    if (!popoverContainer) {
+      popoverContainer = document.createElement("div");
+      popoverContainer.id = "popoverContainer";
+    }
+    popoverContainer.appendChild(popover);
+    document.body.appendChild(popoverContainer);
 
     this.addComment(id);
   },
@@ -78,9 +99,14 @@ const comments = {
     const addComBtn = document.createElement("button");
     addComBtn.innerText = "Add Comment";
     addComBtn.addEventListener("click", () => {
-      textarea.setAttribute("readonly", "true");
-      addComment(id);
+      const p = document.createElement("p");
+      p.innerText = textarea.value;
+      // comment.insertBefore(p, comment.childNodes[2]);
+      comment.appendChild(p);
       addComBtn.setAttribute("disabled", "true");
+      // resolveComBtn.setAttribute("disabled", "true");
+      // textarea.setAttribute("readonly", "true");
+      // addComment(id);
     });
 
     // Resolve comment
@@ -89,7 +115,7 @@ const comments = {
     resolveComBtn.addEventListener("click", () => {
       const p = document.createElement("p");
       p.innerText = `Resolved at: ${splitDate}`;
-      comment.insertBefore(p, comment.childNodes[2]);
+      comment.insertBefore(p, comment.childNodes[3]);
       resolveComBtn.setAttribute("disabled", "true");
     });
 
