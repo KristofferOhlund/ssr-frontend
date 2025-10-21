@@ -19,6 +19,9 @@ const props = defineProps({
 // CommentID
 const commentId = ref(0);
 
+// If true - shows addComment btn, else hide
+const selectionChanged = ref(false);
+
 // Documents fetched from Database
 const documentData = ref(null);
 
@@ -35,14 +38,13 @@ function emit() {
   console.log("event triggered");
   socket.emit("update", documentData.value);
 }
-function triggerInputEvent () {
-    // Manually throw input event after comment
-    // this will update documentData.value even if no manual
-    // input is made
-    const event = new Event("input", { bubbles: true });
-    const editor = document.getElementById(`editor`);
-    editor?.dispatchEvent(event);
-    console.log("event triggered", event);
+function triggerInputEvent() {
+  // Manually throw input event after comment
+  // this will update documentData.value even if no manual
+  // input is made
+  const event = new Event("input", { bubbles: true });
+  const editor = document.getElementById(`editor`);
+  editor?.dispatchEvent(event);
 }
 
 // Call getDocument function
@@ -59,19 +61,19 @@ onMounted(async () => {
   // Testing to render out the comments...
   console.log("Comments: ", documentData.value.comments);
 
-  if(documentData.value.comments){
-    const popoverContainer = document.createElement('div');
+  if (documentData.value.comments) {
+    const popoverContainer = document.createElement("div");
     popoverContainer.id = "popoverContainer";
 
-    for(const comment of documentData.value.comments) {
-      const popover = document.createElement('div');
+    for (const comment of documentData.value.comments) {
+      const popover = document.createElement("div");
 
       popover.setAttribute("popover", "manual");
       popover.classList.add("popover");
       popover.id = `pop${comment.id}`;
 
       popover.innerHTML = comment.content;
-      popoverContainer.appendChild(popover)
+      popoverContainer.appendChild(popover);
 
       // To give new added comments the right index
       commentId.value++;
@@ -94,7 +96,6 @@ onMounted(async () => {
       });
     }
   }
-
 });
 
 /**
@@ -102,31 +103,34 @@ onMounted(async () => {
  * Use DocActions insted of Component
  */
 async function updateDocument() {
-  const objData = {};
-  Object.assign(objData, documentData.value);
+  const objData = JSON.parse(JSON.stringify(documentData.value));
   objData["id"] = objData["_id"];
   delete objData["_id"];
 
-  const result = await DocActions.updateDocument(objData);
-  if (result) {
-    console.log("Redirecting...");
-    router.push({ name: "documents" });
+  console.log(objData);
+  // const result = await DocActions.updateDocument(objData);
+  // if (result) {
+  //   console.log("Redirecting...");
+  //   router.push({ name: "documents" });
 
-    const popoverContainer = document.getElementById("popoverContainer");
-    popoverContainer?.remove()
-  }
+  //   const popoverContainer = document.getElementById("popoverContainer");
+  //   popoverContainer?.remove();
+  // }
 }
 
-function insertUpdatedComment(id){
-    // Find current popover
+function insertUpdatedComment(id) {
+  console.log("InsertUpdatedCOmment trigger");
+  // Find current popover
   const popover = document.getElementById(`pop${id}`);
 
   if (!documentData.value.comments) {
     documentData.value.comments = [];
   }
-  const newComment = {id: id, content: popover?.innerHTML};
-  const foundIndex = documentData.value.comments.findIndex(element => element.id === newComment.id);
-  if(foundIndex !== -1){
+  const newComment = { id: id, content: popover?.innerHTML };
+  const foundIndex = documentData.value.comments.findIndex(
+    (element) => element.id === newComment.id
+  );
+  if (foundIndex !== -1) {
     documentData.value.comments.splice(foundIndex, 1, newComment);
   } else {
     documentData.value.comments.push(newComment);
@@ -136,30 +140,21 @@ function insertUpdatedComment(id){
  * Add comments to DOM
  */
 function dataComments() {
-  comments.makeComment(commentId.value);
+  comments.makeComment(documentData, commentId.value);
 
   // Find current popover
   const popover = document.getElementById(`pop${commentId.value}`);
 
+  // If comments property is not found, create it as an array
   if (!documentData.value.comments) {
     documentData.value.comments = [];
   }
-  documentData.value.comments.push({
-    id: commentId.value,
-    content: popover?.innerHTML,
-  });
 
-  // const div = document.createElement("div");
-  // div.setAttribute("id", `${commentId.value++}`);
-  // div.innerHTML = documentData.value.comments[commentId.value].content;
   triggerInputEvent();
-  // document.body.appendChild(div);
   commentId.value++;
   // Set value to false => hide comment btn
   selectionChanged.value = false;
 }
-
-const selectionChanged = ref(false);
 
 /**
  * Update selectionChanged value
@@ -167,7 +162,6 @@ const selectionChanged = ref(false);
 function selectionstart() {
   selectionChanged.value = true;
 }
-
 </script>
 
 <template>
@@ -234,4 +228,3 @@ form {
   position: relative;
 }
 </style>
-
