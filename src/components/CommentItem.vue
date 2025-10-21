@@ -1,4 +1,5 @@
-<script setup>
+<!-- <script setup>
+ // DEPRECATED
 import { ref, onMounted } from "vue";
 
 //  Detta kan nog funka,
@@ -261,3 +262,4 @@ function resolveComment(comment) {
 //   color: black;
 // }
 // </style> -->
+-->

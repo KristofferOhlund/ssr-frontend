@@ -1,4 +1,5 @@
-<script setup>
+<!-- <script setup>
+ // DEPRECATED
 import DocItem from "@/components/DocItem.vue";
 import DocActions from "./composables/DocumentActions.js";
 
@@ -54,4 +55,4 @@ hr {
 .btn-delete:hover {
   background-color: rgb(228, 44, 44);
 }
-</style>
+</style> -->
