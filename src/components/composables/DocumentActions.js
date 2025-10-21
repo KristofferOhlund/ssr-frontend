@@ -215,6 +215,7 @@ const DocActions = {
                             _id
                             author
                             collaborators
+                            type
                             content
                             title
                             preview
@@ -223,6 +224,7 @@ const DocActions = {
                             _id
                             author
                             collaborators
+                            type
                             content
                             title
                             preview
