@@ -61,8 +61,10 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-    const popoverContainer = document.getElementById("popoverContainer");
+  const popoverContainer = document.getElementById("popoverContainer");
+  if (popoverContainer) {
     popoverContainer.innerHTML = "";
+  }
 });
 
 function renderPopoverDynamically() {
@@ -73,6 +75,8 @@ function renderPopoverDynamically() {
       popoverContainer.id = "popoverContainer";
       document.body.appendChild(popoverContainer);
     }
+
+    popoverContainer.innerHTML = "";
 
     for (const comment of documentData.value.comments) {
       const popover = document.createElement("div");
@@ -90,9 +94,11 @@ function renderPopoverDynamically() {
     const closeBtns = document.querySelectorAll(".close-btn");
     for (const btn of closeBtns) {
       btn.addEventListener("click", () => {
-        const id = btn.id.slice(-1);
-        insertUpdatedComment(id);
-        const pop = document.querySelector(`#pop${id}`);
+        const reg = /\d+/;
+        const id = btn.id.match(reg);
+        const idNumber = id[0];
+        insertUpdatedComment(idNumber);
+        const pop = document.querySelector(`#pop${idNumber}`);
         pop.hidePopover();
         triggerInputEvent();
       });
