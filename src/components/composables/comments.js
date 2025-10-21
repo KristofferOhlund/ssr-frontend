@@ -5,7 +5,7 @@ const date = new Date(strptime).toString();
 const splitDate = date.split(" ").slice(0, -5).join(" ");
 
 const comments = {
-    makeComment: function makeComment(id) {
+    makeComment: function makeComment(documentData, id) {
         console.log("Creating comment...");
         const selection = window.getSelection();
         if (!selection) {
@@ -23,11 +23,11 @@ const comments = {
         selection.addRange(range);
 
         // Create the actual popover element
-        this.createPopoverElement(id);
+        this.createPopoverElement(documentData, id);
         console.log("1");
     },
 
-    createPopoverElement: function createPopoverElement(id) {
+    createPopoverElement: function createPopoverElement(documentData, id) {
         console.log("Creating popover...");
         // Create Popover:
         const popover = document.createElement("div");
@@ -44,10 +44,6 @@ const comments = {
         closeBtn.innerText = "Close pop";
         closeBtn.classList.add("close-btn");
         closeBtn.id = `close-btn-${id}`;
-        // Instead of using event listener:
-        // closeBtn.setAttribute("popovertarget", `pop${id}`);
-        // closeBtn.setAttribute("popovertargetaction", "hide");
-        // Using attributes keeps them klickable when created by inserting innerHTML
 
         closeBtn.addEventListener("click", () => {
             const pop = document.querySelector(`#pop${id}`);
