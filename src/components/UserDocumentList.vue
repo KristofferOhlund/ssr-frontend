@@ -1,7 +1,6 @@
 <script setup>
 import DocItem from "@/components/DocItem.vue";
 import DocActions from "./composables/DocumentActions.js";
-import { User } from "./composables/UserComposable.js";
 import router from "../router/index.ts";
 
 const { allDocs, loading } = defineProps(["allDocs", "loading"]);
@@ -40,7 +39,7 @@ async function deleteDocument(id) {
   const response = await DocActions.deleteDocument(id);
   // Update docs after delete
   if (response.deletedCount > 0) {
-    allDocs.data = await DocActions.fetchDocuments(User.email);
+    router.push({ name: "home" });
   }
 }
 </script>
@@ -52,7 +51,23 @@ async function deleteDocument(id) {
     <div v-if="allDocs.data !== null">
       <h2>Dina Dokument:</h2>
       <div v-for="doc in allDocs.data.authorDocs">
-        <DocItem :doc="doc"> </DocItem>
+        <div class="doc-container">
+          <DocItem :doc="doc"> </DocItem>
+          <div class="button-container">
+            <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
+            <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
+            <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
+              Delete
+            </button>
+          </div>
+        </div>
+        <hr />
+      </div>
+    </div>
+    <div v-if="allDocs.data.colabDocs" v-for="doc in allDocs.data.colabDocs">
+      <h2>Dokument som delas med dig:</h2>
+      <div class="doc-container">
+        <DocItem :doc="doc" :isShared="true"> </DocItem>
         <div class="button-container">
           <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
           <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
@@ -60,18 +75,6 @@ async function deleteDocument(id) {
             Delete
           </button>
         </div>
-        <hr />
-      </div>
-    </div>
-    <div v-if="allDocs.data.colabDocs" v-for="doc in allDocs.data.colabDocs">
-      <h2>Dokument som delas med dig:</h2>
-      <DocItem :doc="doc" :isShared="true"> </DocItem>
-      <div class="button-container">
-        <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
-        <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
-        <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
-          Delete
-        </button>
       </div>
       <hr />
     </div>
@@ -80,11 +83,11 @@ async function deleteDocument(id) {
 
 <style>
 .button-container {
-  padding: 0rem calc(var(--section-gap) / 4) 1rem 0;
+  padding: 0.5rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-end;
-  gap: 2rem;
+  gap: 0.5rem;
 }
 
 hr {
@@ -122,5 +125,10 @@ hr {
 
 .btn-delete:hover {
   background-color: rgb(228, 44, 44);
+}
+
+.doc-container {
+  display: flex;
+  align-items: center;
 }
 </style>
