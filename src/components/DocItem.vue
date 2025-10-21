@@ -11,6 +11,7 @@ const props = defineProps<{
     content: string;
     collaborators: Array<string>;
     author: string;
+    type: string;
   };
   // If a document is shared by another user, sharedBy = author
   isShared: false;
@@ -20,8 +21,18 @@ const props = defineProps<{
 <template>
   <div class="item">
     <div class="item-container">
-      <img alt="Vue logo" class="logo" src="@/assets/text.png" width="125" height="125" />
-      <h3 id="title">{{ props.doc.title }}</h3>
+      <img
+        v-if="props.doc.type === 'text'"
+        alt="Text Document logo"
+        class="logo doctype"
+        src="@/assets/text.png"
+        width="75"
+        height="75"
+      />
+      <img v-else alt="Code document" class="logo" src="@/assets/code.png" width="75" height="75" />
+      <div>
+        <h3 id="title">{{ props.doc.title }}</h3>
+      </div>
     </div>
 
     <!--<p id="content">{{ props.doc.content }}</p>
@@ -57,6 +68,7 @@ const props = defineProps<{
 }
 
 h3 {
+  margin-left: 0.5rem;
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.4rem;
@@ -115,5 +127,17 @@ p {
   .item:last-of-type:after {
     display: none;
   }
+}
+
+.item-container {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.doctype {
+  display: inline-block;
 }
 </style>
