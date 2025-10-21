@@ -50,8 +50,12 @@ const props = defineProps<{
       </div>
     </div>
     <div v-if="props.isShared">
-      <h3>Dokument delas av:</h3>
+      <details>
+        <summary>
+          <h4>Dokument delas av:</h4>
+        </summary>
       <p>{{ props.doc.author }}</p>
+      </details>
     </div>
   </div>
 </template>

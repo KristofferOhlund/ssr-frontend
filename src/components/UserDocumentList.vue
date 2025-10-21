@@ -64,19 +64,21 @@ async function deleteDocument(id) {
         <hr />
       </div>
     </div>
-    <div v-if="allDocs.data.collabDocs" v-for="doc in allDocs.data.collabDocs">
+    <div v-if="allDocs.data.collabDocs">
       <h2>Dokument som delas med dig:</h2>
-      <div class="doc-container">
-        <DocItem :doc="doc" :isShared="true"> </DocItem>
-        <div class="button-container">
-          <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
-          <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
-          <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
-            Delete
-          </button>
+      <div v-for="doc in allDocs.data.collabDocs">
+        <div class="doc-container">
+          <DocItem :doc="doc" :isShared="true"> </DocItem>
+          <div class="button-container">
+            <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
+            <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
+            <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
+              Delete
+            </button>
+          </div>
         </div>
+        <hr />
       </div>
-      <hr />
     </div>
   </div>
 </template>
