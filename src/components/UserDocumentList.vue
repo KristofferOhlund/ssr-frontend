@@ -49,17 +49,19 @@ async function deleteDocument(id) {
   <div class="joke-section">
     <p v-if="loading.value">Documents is loading...</p>
     <p v-if="allDocs.data === null">Something went wrong..</p>
-    <div v-else v-for="doc in allDocs.data.authorDocs">
-      <h2>Dina Dokument: {{ `${allDocs.data.authorDocs.length}` }}</h2>
-      <DocItem :doc="doc"> </DocItem>
-      <div class="button-container">
-        <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
-        <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
-        <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
-          Delete
-        </button>
+    <div v-if="allDocs.data !== null">
+      <h2>Dina Dokument:</h2>
+      <div v-for="doc in allDocs.data.authorDocs">
+        <DocItem :doc="doc"> </DocItem>
+        <div class="button-container">
+          <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
+          <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
+          <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
+            Delete
+          </button>
+        </div>
+        <hr />
       </div>
-      <hr />
     </div>
     <div v-if="allDocs.data.colabDocs" v-for="doc in allDocs.data.colabDocs">
       <h2>Dokument som delas med dig:</h2>
