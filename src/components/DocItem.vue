@@ -19,9 +19,13 @@ const props = defineProps<{
 
 <template>
   <div class="item">
-    <h3 id="title">{{ props.doc.title }}</h3>
-    <p id="content">{{ props.doc.content }}</p>
-    <p class="id" id="id">{{ props.doc._id }}</p>
+    <div class="item-container">
+      <img alt="Vue logo" class="logo" src="@/assets/text.png" width="125" height="125" />
+      <h3 id="title">{{ props.doc.title }}</h3>
+    </div>
+
+    <!--<p id="content">{{ props.doc.content }}</p>
+    <p class="id" id="id">{{ props.doc._id }}</p>-->
     <div v-if="!props.isShared">
       <div v-if="props.doc.collaborators">
         <h3>Dokument delas med:</h3>
