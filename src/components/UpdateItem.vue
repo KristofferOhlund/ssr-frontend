@@ -125,11 +125,13 @@ function insertUpdatedComment(id){
     documentData.value.comments = [];
   }
   const newComment = {id: id, content: popover?.innerHTML};
-
   const foundIndex = documentData.value.comments.findIndex(element => element.id === newComment.id);
-  documentData.value.comments.splice(foundIndex, 1, newComment);
+  if(foundIndex !== -1){
+    documentData.value.comments.splice(foundIndex, 1, newComment);
+  } else {
+    documentData.value.comments.push(newComment);
+  }
 }
-
 /**
  * Add comments to DOM
  */
