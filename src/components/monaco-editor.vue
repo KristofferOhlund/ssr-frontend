@@ -53,7 +53,9 @@ socket.on("update", (data) => {
  * @param value string Updated value
  */
 function emit() {
-  socket.emit("update", updateCode.value);
+  if (updateCode) {
+    socket.emit("update", updateCode.value);
+  }
 }
 
 // ------------ ACTIONS ------------
