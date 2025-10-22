@@ -7,11 +7,6 @@ import router from "../router/index.js";
 
 import { socket } from "./socket/socket.js";
 
-// TODO
-// UPDATE IS ACTING WIERD - SOMETIMES UPDATES AND SOMETIMES DONT
-// WHEN DELET DOCUMENT - DISPLAYS KINGENS DOC? WHEN REFRESH SHOWS ALL AGAIN
-// WIERD ERRORS - FLAGS.JOB FULL & PROPERTY 'ON' ON NULL
-
 // ------------ SETUP ------------
 // Define model to be able to prepulate data from
 // an already existing code-document
@@ -30,6 +25,10 @@ const code = ref();
 
 // Saved output from Execution - This is shown in 'Terminal'
 const decodedOutput = ref("");
+
+// Show info on update
+const jumbo = ref(null);
+let hasError = ref(false);
 
 // CodeEditor Config
 const editorOptions = {
@@ -88,20 +87,30 @@ async function saveCodeDocument() {
 
 // Update Code Document
 async function updateCodeDocument() {
-  // Update title when current date and time
-  currentCode.value.title = date;
-  currentCode.value.content = updateCode.value;
+  // Make currentCode an JS objekt - since this stores the id, author and everything else
+  const documentObject = JSON.parse(JSON.stringify(currentCode.value));
+  // database looks for 'id' therefore copy and replace _id
+  documentObject["id"] = documentObject["_id"];
+  delete documentObject["_id"];
 
-  const result = await DocActions.updateDocument(currentCode);
+  // Update the content of our object, corresponding to the value from our new code
+  documentObject.content = updateCode.value;
 
-  if (result) {
-    // redirect
-    router.push({ name: "documents" });
+  // Update the database
+  const result = await DocActions.updateDocument(documentObject);
+  if (!result.modifiedCount) {
+    jumbo.value = result.message;
+    hasError.value = true;
+  } else {
+    jumbo.value = "Document uppdated successfully!";
   }
 }
 </script>
 
 <template>
+  <div class="jumbo" id="jumbo" v-if="jumbo" :class="{ error: hasError }">
+    <h3>{{ jumbo }}</h3>
+  </div>
   <form class="code-form" @submit.prevent="execute">
     <div style="height: 400px">
       <CodeEditor
@@ -172,5 +181,20 @@ async function updateCodeDocument() {
   50% {
     opacity: 0;
   }
+}
+
+.jumbo {
+  border-radius: 5px;
+  height: 3rem;
+  text-align: center;
+  align-content: center;
+  font-weight: bold;
+  box-shadow: inset 2px lightcyan;
+  color: #fff;
+  background-color: green;
+}
+
+.error {
+  background-color: #e42c2c;
 }
 </style>
