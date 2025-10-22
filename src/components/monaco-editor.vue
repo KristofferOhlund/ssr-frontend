@@ -12,16 +12,18 @@ import { socket } from "./socket/socket.js";
 // an already existing code-document
 const currentCode = defineModel("currentCode");
 
+// If NEW Code Document
+const code = ref();
+const codeTitle = ref();
+
 // Copy the value of property content since updateCode is an entire object
 // make a new ref out of the content property - this will be rendered and
 // executed in CodeEditor
 let updateCode;
 if (currentCode.value) {
   updateCode = ref(currentCode.value.content);
+  codeTitle.value = currentCode.value.title;
 }
-
-// If NEW Code Document
-const code = ref();
 
 // Saved output from Execution - This is shown in 'Terminal'
 const decodedOutput = ref("");
@@ -71,7 +73,7 @@ async function execute() {
 // Save Code as a Document
 async function saveCodeDocument() {
   const body = {
-    title: `Code execution: ${date}`,
+    title: `${codeTitle.value}.js`,
     content: `${code.value}`,
     type: "code",
   };
@@ -93,8 +95,9 @@ async function updateCodeDocument() {
   documentObject["id"] = documentObject["_id"];
   delete documentObject["_id"];
 
-  // Update the content of our object, corresponding to the value from our new code
+  // Update the content and title of our object, corresponding to the value from our new code
   documentObject.content = updateCode.value;
+  documentObject.title = codeTitle.value;
 
   // Update the database
   const result = await DocActions.updateDocument(documentObject);
@@ -113,6 +116,7 @@ async function updateCodeDocument() {
   </div>
   <form class="code-form" @submit.prevent="execute">
     <div style="height: 400px">
+      <input type="text" placeholder="Spara dokument som..." v-model="codeTitle"></input>
       <CodeEditor
         v-if="!updateCode"
         v-model:value="code"
