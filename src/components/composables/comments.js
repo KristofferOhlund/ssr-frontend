@@ -1,4 +1,4 @@
-import { User } from "./userComposable.js";
+import { User } from "./UserComposable.js";
 
 const strptime = Date.now();
 const date = new Date(strptime).toString();
