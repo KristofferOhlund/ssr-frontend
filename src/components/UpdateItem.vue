@@ -26,8 +26,15 @@ const documentData = ref(null);
 
 // ------- SOCKET --------
 socket.on("update", (data) => {
-  documentData.value = data;
-  renderPopoverDynamically();
+  // Because monacoEditor is a child and uses documentData as a v-model
+  // whenever the child emits an update it updates the documentData.value
+  // which socket.on("update") catches and updates the data, which in turns destroy the
+  // monaco editor.
+  // Therefore we only update the data if its a document - even though the event is still catched
+  if (documentData && documentData.value.type === "text") {
+    documentData.value = data;
+    renderPopoverDynamically();
+  }
 });
 
 /**
