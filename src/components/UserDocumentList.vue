@@ -54,7 +54,9 @@ async function deleteDocument(id) {
         <div class="doc-container">
           <DocItem :doc="doc"> </DocItem>
           <div class="button-container">
-            <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
+            <button :value="doc._id" @click="shareDocument(doc._id)" class="btn share-btn">
+              Share
+            </button>
             <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
             <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
               Delete
@@ -70,7 +72,9 @@ async function deleteDocument(id) {
         <div class="doc-container">
           <DocItem :doc="doc" :isShared="true"> </DocItem>
           <div class="button-container">
-            <button :value="doc._id" @click="shareDocument(doc._id)" class="btn">Share</button>
+            <button :value="doc._id" @click="shareDocument(doc._id)" class="btn share-btn">
+              Share
+            </button>
             <button :value="doc._id" @click="updateDocument(doc._id)" class="btn">Update</button>
             <button :value="doc._id" @click="deleteDocument(doc._id)" class="btn btn-delete">
               Delete
@@ -108,6 +112,7 @@ hr {
 .btn:hover {
   background-color: rgb(0, 189, 126);
   color: var(--color-background);
+  cursor: pointer;
 }
 
 .add-btn,
@@ -123,6 +128,10 @@ hr {
 .close-btn:hover {
   background-color: rgb(0, 126, 189);
   color: var(--color-background);
+}
+
+.share-btn:hover {
+  background-color: yellow;
 }
 
 .btn-delete:hover {
