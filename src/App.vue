@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import { state } from "./components/socket/socket.js";
 import { User } from "./components/composables/UserComposable.js";
 </script>
 <template>
@@ -16,14 +15,12 @@ import { User } from "./components/composables/UserComposable.js";
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/documents">Documents</RouterLink>
         <RouterLink to="/create">Create new doc</RouterLink>
-        <RouterLink to="/connection-state">Connection - {{ state.connected }}</RouterLink>
         <div v-if="User.isLoggedIn">
           <RouterLink to="/logout">Logout</RouterLink>
         </div>
         <div v-else>
           <RouterLink to="/login">Login</RouterLink>
           <RouterLink to="/register">Register</RouterLink>
-          <RouterLink to="/comment">Comment</RouterLink>
         </div>
       </nav>
     </div>
